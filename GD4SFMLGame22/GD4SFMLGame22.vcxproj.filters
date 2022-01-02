@@ -212,6 +212,11 @@
     <ClInclude Include="MissionStatus.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bikes.hpp">
+    </ClInclude>
+    <ClInclude Include="BikeType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceHolder.inl">

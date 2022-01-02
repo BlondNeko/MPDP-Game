@@ -82,6 +82,20 @@ void World::LoadTextures()
 	m_textures.Load(Textures::kMissileRefill, "Media/Textures/MissileRefill.png");
 	m_textures.Load(Textures::kFireSpread, "Media/Textures/FireSpread.png");
 	m_textures.Load(Textures::kFireRate, "Media/Textures/FireRate.png");
+
+	m_textures.Load(Textures::kNormal, "Media/Sprites/BBike1.png");
+	m_textures.Load(Textures::kRacer, "Media/Sprites/RBike1.png");
+	m_textures.Load(Textures::kNitro, "Media/Sprites/GBike1.png");
+	m_textures.Load(Textures::kOffroader, "Media/Sprites/TBike1.png");
+
+	m_textures.Load(Textures::kObstacle1, "Media/Sprites/Obs1.png");
+	m_textures.Load(Textures::KPowerup1, "Media/Sprites/PUp1.png");
+	m_textures.Load(Textures::kPowerup2, "Media/Sprites/PUp2.png");
+	m_textures.Load(Textures::kSpill1, "Media/Sprites/Spill1.png");
+	m_textures.Load(Textures::kSpill2, "Media/Sprites/Spill2.png");
+
+	m_textures.Load(Textures::kFinish1, "Media/Sprites/FinishLine1.png");
+	m_textures.Load(Textures::kFinish2, "Media/Sprites/FinishLine2.png");
 }
 
 void World::BuildScene()

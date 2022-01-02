@@ -26,6 +26,15 @@ struct AircraftData
 	std::vector<Direction> m_directions;
 };
 
+struct BikeData
+{
+	int m_hitpoints;
+	float m_speed;
+	Textures m_texture;
+	sf::Time m_fire_interval;
+	std::vector<Direction> m_directions;
+};
+
 struct ProjectileData
 {
 	int m_damage;
@@ -40,6 +49,7 @@ struct PickupData
 };
 
 std::vector<AircraftData> InitializeAircraftData();
+std::vector<BikeData> InitializeBikeData();
 std::vector<ProjectileData> InitializeProjectileData();
 std::vector<PickupData> InitializePickupData();
 

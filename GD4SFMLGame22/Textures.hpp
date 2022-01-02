@@ -14,5 +14,18 @@ enum class Textures
 	kTitleScreen,
 	kButtonNormal,
 	kButtonSelected,
-	kButtonPressed
+	kButtonPressed,
+
+	kNormal,
+	kOffroader,
+	kNitro,
+	kRacer,
+	KPowerup1,
+	kPowerup2,
+	kObstacle1,
+	kSpill1,
+	kSpill2,
+	kFinish1,
+	kFinish2
+
 };
