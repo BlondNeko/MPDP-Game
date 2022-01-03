@@ -159,6 +159,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="ObstacleType.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Layers.hpp" />
     <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MissionStatus.hpp" />
+    <ClInclude Include="ObstacleType.hpp" />
     <ClInclude Include="PauseState.hpp" />
     <ClInclude Include="Pickup.hpp" />
     <ClInclude Include="PickupType.hpp" />

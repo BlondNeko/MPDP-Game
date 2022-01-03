@@ -96,6 +96,9 @@
     <ClCompile Include="GameOverState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObstacleType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Textures.hpp">
@@ -212,9 +215,7 @@
     <ClInclude Include="MissionStatus.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bikes.hpp">
-    </ClInclude>
-    <ClInclude Include="BikeType.hpp">
+    <ClInclude Include="ObstacleType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

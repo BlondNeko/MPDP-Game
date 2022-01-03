@@ -26,6 +26,8 @@ enum class Textures
 	kSpill1,
 	kSpill2,
 	kFinish1,
-	kFinish2
+	kFinish2,
+	kCity1,
+	kCity2
 
 };

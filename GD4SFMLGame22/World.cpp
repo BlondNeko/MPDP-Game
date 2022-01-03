@@ -8,6 +8,7 @@
 #include "Projectile.hpp"
 #include "Utility.hpp"
 
+//Note - With the background, the road is 457px in height, so ~455px
 World::World(sf::RenderWindow& window, FontHolder& font)
 	: m_window(window)
 	, m_camera(window.getDefaultView())
@@ -15,15 +16,15 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_fonts(font)
 	, m_scenegraph()
 	, m_scene_layers()
-	, m_world_bounds(0.f, 0.f, m_camera.getSize().x, 2000)
-	, m_spawn_position(m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f)
+	, m_world_bounds(0.f, 0.f, 5000, m_camera.getSize().y)
+	, m_spawn_position(m_camera.getSize().x/8.f, m_world_bounds.height - m_camera.getSize().y /6.f)
 	, m_scrollspeed(-50.f)
 	, m_player_aircraft(nullptr)
 {
 	LoadTextures();
 	BuildScene();
 	std::cout << m_camera.getSize().x << m_camera.getSize().y << std::endl;
-	m_camera.setCenter(m_spawn_position);
+	//m_camera.setCenter(m_spawn_position);
 }
 
 void World::Update(sf::Time dt)
@@ -96,6 +97,8 @@ void World::LoadTextures()
 
 	m_textures.Load(Textures::kFinish1, "Media/Sprites/FinishLine1.png");
 	m_textures.Load(Textures::kFinish2, "Media/Sprites/FinishLine2.png");
+	m_textures.Load(Textures::kCity1, "Media/Sprites/Background.png");
+	m_textures.Load(Textures::kCity2, "Media/Sprites/Background2.png");
 }
 
 void World::BuildScene()
@@ -110,7 +113,7 @@ void World::BuildScene()
 	}
 
 	//Prepare the background
-	sf::Texture& texture = m_textures.Get(Textures::kDesert);
+	sf::Texture& texture = m_textures.Get(Textures::kCity1);
 	sf::IntRect textureRect(m_world_bounds);
 	//Tile the texture to cover our world
 	texture.setRepeated(true);
@@ -166,7 +169,8 @@ void World::AdaptPlayerVelocity()
 		m_player_aircraft->SetVelocity(velocity / std::sqrt(2.f));
 	}
 	//Add scrolling velocity
-	m_player_aircraft->Accelerate(0.f, m_scrollspeed);
+	m_player_aircraft->Accelerate(m_scrollspeed, 0.f);
+	//std::cout << m_player_aircraft->getPosition().x << "  " << m_player_aircraft->getPosition().y << std::endl;
 }
 
 sf::FloatRect World::GetViewBounds() const
@@ -178,9 +182,10 @@ sf::FloatRect World::GetBattlefieldBounds() const
 {
 	//Return camera bounds + a small area at the top where enemies spawn offscreen
 	sf::FloatRect bounds = GetViewBounds();
-	bounds.top -= 100.f;
-	bounds.height += 100.f;
+	bounds.top += 100.f;
+	bounds.height += 50.f;
 
+	//std::cout << bounds.top << " " << bounds.height << std::endl;
 	return bounds;
 }
 
@@ -192,7 +197,7 @@ void World::SpawnEnemies()
 		SpawnPoint spawn = m_enemy_spawn_points.back();
 		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.m_type, m_textures, m_fonts));
 		enemy->setPosition(spawn.m_x, spawn.m_y);
-		enemy->setRotation(180.f);
+		enemy->setRotation(-90.f);
 		m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(enemy));
 
 		m_enemy_spawn_points.pop_back();
@@ -202,25 +207,85 @@ void World::SpawnEnemies()
 
 void World::AddEnemy(AircraftType type, float relX, float relY)
 {
-	SpawnPoint spawn(type, m_spawn_position.x + relX, m_spawn_position.y - relY);
+	//SpawnPoint spawn(type, m_spawn_position.x + relX, m_spawn_position.y - relY);
+	SpawnPoint spawn(type, relX, relY);
 	m_enemy_spawn_points.emplace_back(spawn);
 }
 
 void World::AddEnemies()
 {
 	//Add all enemies
-	AddEnemy(AircraftType::kRaptor, 0.f, 500.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 1000.f);
-	AddEnemy(AircraftType::kRaptor, 100.f, 1100.f);
-	AddEnemy(AircraftType::kRaptor, -100.f, 1100.f);
-	AddEnemy(AircraftType::kAvenger, -70.f, 1400.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 1400.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 1600.f);
+	/*
+	 * AddEnemy(AircraftType::kRaptor, 0.f, 200.f);
+	AddEnemy(AircraftType::kRaptor, 0.f, 100.f);
+	AddEnemy(AircraftType::kRaptor, 100.f, 100.f);
+	AddEnemy(AircraftType::kRaptor, -100.f, 100.f);
+	AddEnemy(AircraftType::kAvenger, -70.f, 400.f);
+	AddEnemy(AircraftType::kAvenger, 70.f, 400.f);
+	AddEnemy(AircraftType::kAvenger, 70.f, 600.f);
+	 */
 
-	//Sort according to y value so that lower enemies are checked first
+
+	//Add obstacles
+	//450.f, 550.f, 650.f
+	AddEnemy(AircraftType::kRaptor, 200.f, 450.f);
+	AddEnemy(AircraftType::kRaptor, 250.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 400.f, 550.f);
+	AddEnemy(AircraftType::kRaptor, 500.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 750.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 750.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 1000.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1100.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 1250.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1400.f, 450.f);
+	AddEnemy(AircraftType::kRaptor, 1500.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1750.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 1800.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 1900.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 2000.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 2200.f, 450.f);
+	 
+
+	//Add obstacles
+	/*
+		AddEnemy(ObstacleType::kOilSpill, 500.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 550.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 650.f, 550.f);
+		AddEnemy(ObstacleType::kOilSpill, 800.f, 650.f);
+		AddEnemy(ObstacleType::kAcidSpill, 850.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 900.f, 550.f);
+		AddEnemy(ObstacleType::kOilSpill, 1000.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 1100.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 1150.f, 650.f);
+		AddEnemy(ObstacleType::kOilSpill, 1400.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 1450.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 1750.f, 550.f);
+		AddEnemy(ObstacleType::kAcidSpill, 1750.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 1950.f, 550.f);
+		AddEnemy(ObstacleType::kBarrier, 2000.f, 550.f);
+		
+		AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
+		AddEnemy(ObstacleType::kOilSpill, 2250.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 2400.f, 550.f);
+		AddEnemy(ObstacleType::kOilSpill, 2450.f, 650.f);
+		AddEnemy(ObstacleType::kAcidSpill, 2750.f, 450.f);
+		AddEnemy(ObstacleType::kOilSpill, 2850.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3000.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3050.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 3200.f, 650.f);
+		AddEnemy(ObstacleType::kOilSpill, 3350.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 3400.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3500.f, 650.f);
+		AddEnemy(ObstacleType::kOilSpill, 3550.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 3750.f, 550.f);
+		
+	 */
+
+	//Sort according to x value so that lower enemies are checked first
 	std::sort(m_enemy_spawn_points.begin(), m_enemy_spawn_points.end(), [](SpawnPoint lhs, SpawnPoint rhs)
 	{
-		return lhs.m_y < rhs.m_y;
+		return lhs.m_x < rhs.m_x;
 	});
 }
 
@@ -321,6 +386,15 @@ void World::HandleCollisions()
 			aircraft.Damage(projectile.GetDamage());
 			projectile.Destroy();
 		}
+
+		/*
+		    Collisions needed:
+		    - Players & Barriers - should stop the player fully and destroy the barrier.
+		    - Players & Acid spills - slows down the player a bit. Acid remains.
+		    - Players & Tar spills - halves the players speed for as long as they are in the spill.
+				Tar remains, and speed returns once player gets out of the tar.
+			- Player & Player - knocks both players speed down by ~ 20% 
+		 */
 
 
 	}
