@@ -6,6 +6,7 @@
 #include "ResourceIdentifiers.hpp"
 
 class Aircraft;
+class Bike;
 
 struct Direction
 {
@@ -26,13 +27,19 @@ struct AircraftData
 	std::vector<Direction> m_directions;
 };
 
+struct ObstacleData
+{
+	std::function<void(Bike&)> m_action;
+	float m_speed_down;
+	Textures m_texture;
+};
+
 struct BikeData
 {
 	int m_hitpoints;
-	float m_speed;
+	float m_offroad_resistance;
+	float m_initial_speed;
 	Textures m_texture;
-	sf::Time m_fire_interval;
-	std::vector<Direction> m_directions;
 };
 
 struct ProjectileData
@@ -52,5 +59,4 @@ std::vector<AircraftData> InitializeAircraftData();
 std::vector<BikeData> InitializeBikeData();
 std::vector<ProjectileData> InitializeProjectileData();
 std::vector<PickupData> InitializePickupData();
-
-
+std::vector<ObstacleData> InitializeObstacleData();

@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="Aircraft.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Bike.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
@@ -159,7 +160,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
-    <ClCompile Include="ObstacleType.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -178,6 +179,8 @@
     <ClInclude Include="Aircraft.hpp" />
     <ClInclude Include="AircraftType.hpp" />
     <ClInclude Include="Application.hpp" />
+    <ClInclude Include="Bike.hpp" />
+    <ClInclude Include="BikeType.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Category.hpp" />
     <ClInclude Include="Command.hpp" />
@@ -193,6 +196,7 @@
     <ClInclude Include="Layers.hpp" />
     <ClInclude Include="MenuState.hpp" />
     <ClInclude Include="MissionStatus.hpp" />
+    <ClInclude Include="Obstacle.hpp" />
     <ClInclude Include="ObstacleType.hpp" />
     <ClInclude Include="PauseState.hpp" />
     <ClInclude Include="Pickup.hpp" />

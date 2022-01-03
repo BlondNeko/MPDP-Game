@@ -92,8 +92,8 @@ void World::LoadTextures()
 	m_textures.Load(Textures::kObstacle1, "Media/Sprites/Obs1.png");
 	m_textures.Load(Textures::KPowerup1, "Media/Sprites/PUp1.png");
 	m_textures.Load(Textures::kPowerup2, "Media/Sprites/PUp2.png");
-	m_textures.Load(Textures::kSpill1, "Media/Sprites/Spill1.png");
-	m_textures.Load(Textures::kSpill2, "Media/Sprites/Spill2.png");
+	m_textures.Load(Textures::kAcidSpill, "Media/Sprites/Spill1.png");
+	m_textures.Load(Textures::kTarSpill, "Media/Sprites/Spill2.png");
 
 	m_textures.Load(Textures::kFinish1, "Media/Sprites/FinishLine1.png");
 	m_textures.Load(Textures::kFinish2, "Media/Sprites/FinishLine2.png");
@@ -248,16 +248,16 @@ void World::AddEnemies()
 
 	//Add obstacles
 	/*
-		AddEnemy(ObstacleType::kOilSpill, 500.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 500.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 550.f, 650.f);
 		AddEnemy(ObstacleType::kBarrier, 650.f, 550.f);
-		AddEnemy(ObstacleType::kOilSpill, 800.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 800.f, 650.f);
 		AddEnemy(ObstacleType::kAcidSpill, 850.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 900.f, 550.f);
-		AddEnemy(ObstacleType::kOilSpill, 1000.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 1000.f, 650.f);
 		AddEnemy(ObstacleType::kBarrier, 1100.f, 450.f);
 		AddEnemy(ObstacleType::kAcidSpill, 1150.f, 650.f);
-		AddEnemy(ObstacleType::kOilSpill, 1400.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 1400.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 1450.f, 650.f);
 		AddEnemy(ObstacleType::kBarrier, 1750.f, 550.f);
 		AddEnemy(ObstacleType::kAcidSpill, 1750.f, 450.f);
@@ -265,19 +265,19 @@ void World::AddEnemies()
 		AddEnemy(ObstacleType::kBarrier, 2000.f, 550.f);
 		
 		AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
-		AddEnemy(ObstacleType::kOilSpill, 2250.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 2250.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
 		AddEnemy(ObstacleType::kBarrier, 2400.f, 550.f);
-		AddEnemy(ObstacleType::kOilSpill, 2450.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 2450.f, 650.f);
 		AddEnemy(ObstacleType::kAcidSpill, 2750.f, 450.f);
-		AddEnemy(ObstacleType::kOilSpill, 2850.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 2850.f, 450.f);
 		AddEnemy(ObstacleType::kAcidSpill, 3000.f, 450.f);
 		AddEnemy(ObstacleType::kAcidSpill, 3050.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 3200.f, 650.f);
-		AddEnemy(ObstacleType::kOilSpill, 3350.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 3350.f, 650.f);
 		AddEnemy(ObstacleType::kBarrier, 3400.f, 450.f);
 		AddEnemy(ObstacleType::kAcidSpill, 3500.f, 650.f);
-		AddEnemy(ObstacleType::kOilSpill, 3550.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 3550.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 3750.f, 550.f);
 		
 	 */

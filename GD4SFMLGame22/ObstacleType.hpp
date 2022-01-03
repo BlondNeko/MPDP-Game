@@ -2,7 +2,7 @@
 enum class ObstacleType
 {
 	kBarrier,
-	kOilSpill,
+	kTarSpill,
 	kAcidSpill
 };
 
