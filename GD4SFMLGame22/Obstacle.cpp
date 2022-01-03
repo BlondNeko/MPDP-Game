@@ -22,7 +22,7 @@ Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures)
 
 unsigned Obstacle::GetCategory() const
 {
-	return Category::Type::kPickup;
+	return Category::Type::kObstacle;
 }
 
 sf::FloatRect Obstacle::GetBoundingRect() const
