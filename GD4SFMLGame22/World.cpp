@@ -29,7 +29,7 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 void World::Update(sf::Time dt)
 {
 	//Scroll the world
-	m_camera.move(0, m_scrollspeed * dt.asSeconds());
+	m_camera.move(-(m_scrollspeed * dt.asSeconds()), 0);
 
 	m_player_aircraft->SetVelocity(0.f, 0.f);
 	DestroyEntitiesOutsideView();
