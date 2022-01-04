@@ -4,9 +4,5 @@ enum class BikeType
 	kNormal,
 	kNitro,
 	kOffroader,
-	kRacer,
-	kSpecialA,
-	kSpecialB,
-	kSpecialC,
-	kSpecialD
+	kRacer
 };

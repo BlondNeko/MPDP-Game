@@ -152,12 +152,11 @@ void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	//Check if bullets or missiles are fired
 	CheckProjectileLaunch(dt, commands);
 	// Update enemy movement pattern; apply velocity
-	//UpdateMovementPattern(dt);
+	UpdateMovementPattern(dt);
 	Entity::UpdateCurrent(dt, commands);
 	UpdateTexts();
 }
 
-/*
 void Aircraft::UpdateMovementPattern(sf::Time dt)
 {
 	//Enemy AI
@@ -183,7 +182,6 @@ void Aircraft::UpdateMovementPattern(sf::Time dt)
 
 
 }
-*/
 
 float Aircraft::GetMaxSpeed() const
 {

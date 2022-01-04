@@ -1,22 +1,31 @@
 #pragma once
-#include <SFML/Graphics/Sprite.hpp>
-
 #include "Entity.hpp"
-#include "ObstacleType.hpp"
+#include "AircraftType.hpp"
 #include "ResourceIdentifiers.hpp"
 
-class Bike;
+#include <SFML/Graphics/Sprite.hpp>
+
+#include "CommandQueue.hpp"
+#include "ObstacleType.hpp"
+#include "TextNode.hpp"
+
 
 class Obstacle : public Entity
 {
 public:
-	Obstacle(ObstacleType type, const TextureHolder& textures);
-	virtual unsigned int GetCategory() const override;
-	virtual sf::FloatRect GetBoundingRect() const;
-	void Apply(Bike& player) const;
-	virtual void DrawCurrent(sf::RenderTarget&, sf::RenderStates states) const override;
+	Obstacle(ObstacleType type, const TextureHolder& textures, const FontHolder& fonts);
+	unsigned int GetCategory() const override;
+
+	sf::FloatRect GetBoundingRect() const override;
+	bool IsMarkedForRemoval() const override;
+
+private:
+	void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 
 private:
 	ObstacleType m_type;
 	sf::Sprite m_sprite;
+
+	bool m_is_marked_for_removal;
 };

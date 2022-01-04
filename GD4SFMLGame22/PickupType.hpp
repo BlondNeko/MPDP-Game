@@ -7,5 +7,6 @@ enum class PickupType
 	kFireRate,
 	kPickupCount,
 	kBoost,
-	kHeal
+	kSpeedUp,
+	kBikeRepair
 };

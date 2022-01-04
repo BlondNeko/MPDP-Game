@@ -20,7 +20,7 @@ public:
 	void IncreaseSpread();
 	void CollectMissiles(unsigned int count);
 	void UpdateTexts();
-	//void UpdateMovementPattern(sf::Time dt);
+	void UpdateMovementPattern(sf::Time dt);
 	float GetMaxSpeed() const;
 	void Fire();
 	void LaunchMissile();
@@ -65,3 +65,4 @@ private:
 	float m_travelled_distance;
 	int m_directions_index;
 };
+

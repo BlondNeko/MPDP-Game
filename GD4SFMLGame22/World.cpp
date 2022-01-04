@@ -89,9 +89,14 @@ void World::LoadTextures()
 	m_textures.Load(Textures::kNitro, "Media/Sprites/GBike1.png");
 	m_textures.Load(Textures::kOffroader, "Media/Sprites/TBike1.png");
 
-	m_textures.Load(Textures::kObstacle1, "Media/Sprites/Obs1.png");
+	m_textures.Load(Textures::kSpecialA, "Media/Sprites/PIdle.png");
+	m_textures.Load(Textures::kSpecialB, "Media/Sprites/BIdle.png");
+	m_textures.Load(Textures::kSpecialC, "Media/Sprites/GBBoar1.png");
+	m_textures.Load(Textures::kSpecialD, "Media/Sprites/GGBoar1.png");
+
+	m_textures.Load(Textures::kBarrier, "Media/Sprites/Obs1.png");
 	m_textures.Load(Textures::KPowerup1, "Media/Sprites/PUp1.png");
-	m_textures.Load(Textures::kPowerup2, "Media/Sprites/PUp2.png");
+	m_textures.Load(Textures::kBoost, "Media/Sprites/PUp2.png");
 	m_textures.Load(Textures::kAcidSpill, "Media/Sprites/Spill1.png");
 	m_textures.Load(Textures::kTarSpill, "Media/Sprites/Spill2.png");
 
@@ -128,15 +133,6 @@ void World::BuildScene()
 	m_player_aircraft = leader.get();
 	m_player_aircraft->setPosition(m_spawn_position);
 	m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(leader));
-
-	// //Add two escorts
-	// std::unique_ptr<Aircraft> leftEscort(new Aircraft(AircraftType::kRaptor, m_textures, m_fonts));
-	// leftEscort->setPosition(-80.f, 50.f);
-	// m_player_aircraft->AttachChild(std::move(leftEscort));
-	//
-	// std::unique_ptr<Aircraft> rightEscort(new Aircraft(AircraftType::kRaptor, m_textures, m_fonts));
-	// rightEscort->setPosition(80.f, 50.f);
-	// m_player_aircraft->AttachChild(std::move(rightEscort));
 
 	AddEnemies();
 }
@@ -229,7 +225,7 @@ void World::AddEnemies()
 	//Add obstacles
 	//450.f, 550.f, 650.f
 	AddEnemy(AircraftType::kRaptor, 200.f, 450.f);
-	AddEnemy(AircraftType::kRaptor, 250.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 250.f, 650.f);/*
 	AddEnemy(AircraftType::kRaptor, 400.f, 550.f);
 	AddEnemy(AircraftType::kRaptor, 500.f, 650.f);
 	AddEnemy(AircraftType::kRaptor, 750.f, 450.f);

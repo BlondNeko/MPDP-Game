@@ -1,28 +1,29 @@
+#pragma once
 #include "Obstacle.hpp"
-#include "Pickup.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "DataTables.hpp"
-#include "ResourceHolder.hpp"
 #include "Utility.hpp"
+#include "ResourceHolder.hpp"
 
 namespace
 {
-	const std::vector<ObstacleData> Table = InitializeObstacleData();
+	//const std::vector<ObstacleData> Table = InitializeObstacleData();
 }
 
-Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures)
-	: Entity(1)
+Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures, const FontHolder& fonts)
+	: Entity(100)
 	, m_type(type)
-	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	, m_sprite(textures.Get(Textures::kBarrier))
+	, m_is_marked_for_removal(false)
 {
 	Utility::CentreOrigin(m_sprite);
 }
 
 unsigned Obstacle::GetCategory() const
 {
-	return Category::Type::kObstacle;
+	return static_cast<int>(Category::kObstacle);
 }
 
 sf::FloatRect Obstacle::GetBoundingRect() const
@@ -30,12 +31,17 @@ sf::FloatRect Obstacle::GetBoundingRect() const
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
 }
 
-void Obstacle::Apply(Bike& player) const
+bool Obstacle::IsMarkedForRemoval() const
 {
-	Table[static_cast<int>(m_type)].m_action(player);
+	return m_is_marked_for_removal;
 }
 
 void Obstacle::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_sprite, states);
+}
+
+void Obstacle::UpdateCurrent(sf::Time dt, CommandQueue& commands)
+{
+	Entity::UpdateCurrent(dt, commands);
 }
