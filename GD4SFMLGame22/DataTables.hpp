@@ -35,9 +35,8 @@ struct BikeData
 {
 	int m_hitpoints;
 	float m_speed;
+	float m_offroad_resistance;
 	Textures m_texture;
-	sf::Time m_fire_interval;
-	std::vector<Direction> m_directions;
 };
 
 struct ProjectileData

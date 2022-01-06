@@ -8,6 +8,7 @@
 
 #include "ResourceHolder.hpp"
 #include "Utility.hpp"
+#include "Bike.hpp"
 
 namespace
 {
@@ -40,15 +41,11 @@ Bike::Bike(BikeType type, const TextureHolder& textures, const FontHolder& fonts
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	, m_speed(Table[static_cast<int>(type)].m_offroad_resistance)
 	, m_offroad_resistance(Table[static_cast<int>(type)].m_offroad_resistance)
-	, m_can_use_boost(false)
 	, m_is_marked_for_removal(false)
-	, m_health_display(nullptr)
-	, m_player_display(nullptr)
 	, m_boost_display(nullptr)
-	, m_travelled_distance(0.f)
-	, m_directions_index(0)
-	, m_is_p_1(false)
+	, m_can_use_boost(false)
 {
 	Utility::CentreOrigin(m_sprite);
 
@@ -59,17 +56,18 @@ Bike::Bike(BikeType type, const TextureHolder& textures, const FontHolder& fonts
 		UseBoost();
 	};
 
-	std::unique_ptr<TextNode> playerDisplay(new TextNode(fonts, ""));
+	/*std::unique_ptr<TextNode> playerDisplay(new TextNode(fonts, ""));
 	m_player_display = playerDisplay.get();
 	AttachChild(std::move(playerDisplay));
 
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
 	m_health_display = healthDisplay.get();
-	AttachChild(std::move(healthDisplay));
+	AttachChild(std::move(healthDisplay));*/
 
 	std::unique_ptr<TextNode> boostDisplay(new TextNode(fonts, ""));
 	m_boost_display = boostDisplay.get();
 	AttachChild(std::move(boostDisplay));
+	
 
 	UpdateTexts();
 
@@ -91,13 +89,13 @@ unsigned int Bike::GetCategory() const
 
 void Bike::IncreaseSpeed(unsigned speedIncrease)
 {
-	m_current_speed += speedIncrease;
+	m_speed += speedIncrease;
 }
 
 void Bike::DecreaseSpeed(unsigned speedDecrease)
 {
-	assert(m_current_speed > 50 && speedDecrease < 20);
-	m_current_speed -= speedDecrease;
+	assert(m_speed > 50 && speedDecrease < 20);
+	m_speed -= speedDecrease;
 }
 
 void Bike::CollectBoost()
@@ -108,14 +106,14 @@ void Bike::CollectBoost()
 void Bike::UseBoost()
 {
 	assert(m_can_use_boost);
-	m_current_speed += 50;
+	m_speed += 50;
 }
 
 void Bike::UpdateTexts()
 {
-	m_health_display->SetString(std::to_string(GetHitPoints()) + "HP");
+	/*m_health_display->SetString(std::to_string(GetHitPoints()) + "HP");
 	m_health_display->setPosition(0.f, -50.f);
-	m_health_display->setRotation(-getRotation());
+	m_health_display->setRotation(-getRotation());*/
 
 	if (m_boost_display)
 	{
@@ -145,12 +143,12 @@ void Bike::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 
 float Bike::GetMaxSpeed() const
 {
-	return Table[static_cast<int>(m_type)].m_initial_speed;
+	return Table[static_cast<int>(m_type)].m_speed;
 }
 
 bool Bike::IsPlayer1() const
 {
-	return m_is_p_1;
+	return true;
 }
 
 sf::FloatRect Bike::GetBoundingRect() const

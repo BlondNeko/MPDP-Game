@@ -149,13 +149,13 @@ void World::AdaptPlayerPosition()
 	//Keep the player on the screen
 	sf::FloatRect view_bounds = GetViewBounds();
 	const float border_distance = 40.f;
+	const float barrier_distance = view_bounds.height / 2.f - 40.f;
 	sf::Vector2f position = m_player_aircraft->getPosition();
 	position.x = std::max(position.x, view_bounds.left + border_distance);
 	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
-	position.y = std::max(position.y, view_bounds.top + border_distance);
+	position.y = std::max(position.y, view_bounds.top + border_distance + barrier_distance);
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
 	m_player_aircraft->setPosition(position);
-
 }
 
 void World::AdaptPlayerVelocity()
@@ -180,10 +180,9 @@ sf::FloatRect World::GetBattlefieldBounds() const
 {
 	//Return camera bounds + a small area at the top where enemies spawn offscreen
 	sf::FloatRect bounds = GetViewBounds();
-	bounds.top += 100.f;
-	bounds.height += 50.f;
+	bounds.top += 400.f;
+	bounds.width += 50.f;
 
-	//std::cout << bounds.top << " " << bounds.height << std::endl;
 	return bounds;
 }
 
@@ -213,72 +212,13 @@ void World::AddEnemy(AircraftType type, float relX, float relY)
 void World::AddEnemies()
 {
 	//Add all enemies
-	/*
-	 * AddEnemy(AircraftType::kRaptor, 0.f, 200.f);
+	AddEnemy(AircraftType::kRaptor, 0.f, 200.f);
 	AddEnemy(AircraftType::kRaptor, 0.f, 100.f);
 	AddEnemy(AircraftType::kRaptor, 100.f, 100.f);
 	AddEnemy(AircraftType::kRaptor, -100.f, 100.f);
 	AddEnemy(AircraftType::kAvenger, -70.f, 400.f);
 	AddEnemy(AircraftType::kAvenger, 70.f, 400.f);
 	AddEnemy(AircraftType::kAvenger, 70.f, 600.f);
-	 */
-
-
-	//Add obstacles
-	//450.f, 550.f, 650.f
-	AddEnemy(AircraftType::kRaptor, 200.f, 450.f);
-	AddEnemy(AircraftType::kRaptor, 250.f, 650.f);/*
-	AddEnemy(AircraftType::kRaptor, 400.f, 550.f);
-	AddEnemy(AircraftType::kRaptor, 500.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 750.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 750.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 1000.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1100.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 1250.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1400.f, 450.f);
-	AddEnemy(AircraftType::kRaptor, 1500.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1750.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 1800.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 1900.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 2000.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 2200.f, 450.f);
-	 
-
-	//Add obstacles
-	/*
-		AddEnemy(ObstacleType::kTarSpill, 500.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 550.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 650.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 800.f, 650.f);
-		AddEnemy(ObstacleType::kAcidSpill, 850.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 900.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 1000.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 1100.f, 450.f);
-		AddEnemy(ObstacleType::kAcidSpill, 1150.f, 650.f);
-		AddEnemy(ObstacleType::kTarSpill, 1400.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 1450.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 1750.f, 550.f);
-		AddEnemy(ObstacleType::kAcidSpill, 1750.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 1950.f, 550.f);
-		AddEnemy(ObstacleType::kBarrier, 2000.f, 550.f);
-		
-		AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 2250.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 2400.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 2450.f, 650.f);
-		AddEnemy(ObstacleType::kAcidSpill, 2750.f, 450.f);
-		AddEnemy(ObstacleType::kTarSpill, 2850.f, 450.f);
-		AddEnemy(ObstacleType::kAcidSpill, 3000.f, 450.f);
-		AddEnemy(ObstacleType::kAcidSpill, 3050.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 3200.f, 650.f);
-		AddEnemy(ObstacleType::kTarSpill, 3350.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 3400.f, 450.f);
-		AddEnemy(ObstacleType::kAcidSpill, 3500.f, 650.f);
-		AddEnemy(ObstacleType::kTarSpill, 3550.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 3750.f, 550.f);
-		
-	 */
 
 	//Sort according to x value so that lower enemies are checked first
 	std::sort(m_enemy_spawn_points.begin(), m_enemy_spawn_points.end(), [](SpawnPoint lhs, SpawnPoint rhs)
@@ -289,14 +229,13 @@ void World::AddEnemies()
 
 void World::SpawnObstacles()
 {
-	//Spawn an enemy when they are relevant - they are relevant when they enter the battlefield bounds
+	//Spawn an obstacle when they are relevant - they are relevant when they enter the battlefield bounds
 	while (!m_obstacle_spawn_points.empty() && m_obstacle_spawn_points.back().m_y > GetBattlefieldBounds().top)
 	{
 		ObstacleSpawnPoint spawn = m_obstacle_spawn_points.back();
-		std::unique_ptr<Obstacle> enemy(new Obstacle(spawn.m_type, m_textures));
-		enemy->setPosition(spawn.m_x, spawn.m_y);
-		m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(enemy));
-
+		std::unique_ptr<Obstacle> obs(new Obstacle(spawn.m_type, m_textures));
+		obs->setPosition(spawn.m_x, spawn.m_y);
+		m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(obs));
 		m_obstacle_spawn_points.pop_back();
 	}
 }
@@ -309,57 +248,27 @@ void World::AddObstacle(ObstacleType type, float relX, float relY)
 
 void World::AddObstacles()
 {
-	//Add all enemies
-	/*
-	 * AddEnemy(AircraftType::kRaptor, 0.f, 200.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 100.f);
-	AddEnemy(AircraftType::kRaptor, 100.f, 100.f);
-	AddEnemy(AircraftType::kRaptor, -100.f, 100.f);
-	AddEnemy(AircraftType::kAvenger, -70.f, 400.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 400.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 600.f);
-	 */
-
-
 	 //Add obstacles
 	 //450.f, 550.f, 650.f
-	AddObstacle(ObstacleType::kBarrier, 200.f, 450.f);
-	AddObstacle(ObstacleType::kBarrier, 250.f, 650.f);
-	/*
-	AddEnemy(AircraftType::kRaptor, 400.f, 550.f);
-	AddEnemy(AircraftType::kRaptor, 500.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 750.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 750.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 1000.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1100.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 1250.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1400.f, 450.f);
-	AddEnemy(AircraftType::kRaptor, 1500.f, 650.f);
-	AddEnemy(AircraftType::kRaptor, 1750.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 1800.f, 450.f);
-	AddEnemy(AircraftType::kAvenger, 1900.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 2000.f, 550.f);
-	AddEnemy(AircraftType::kAvenger, 2200.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 200.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 250.f, 650.f);
 
-
-	//Add obstacles
-	/*
-		AddEnemy(ObstacleType::kTarSpill, 500.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 550.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 650.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 800.f, 650.f);
-		AddEnemy(ObstacleType::kAcidSpill, 850.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 900.f, 550.f);
-		AddEnemy(ObstacleType::kTarSpill, 1000.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 1100.f, 450.f);
-		AddEnemy(ObstacleType::kAcidSpill, 1150.f, 650.f);
-		AddEnemy(ObstacleType::kTarSpill, 1400.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 1450.f, 650.f);
-		AddEnemy(ObstacleType::kBarrier, 1750.f, 550.f);
-		AddEnemy(ObstacleType::kAcidSpill, 1750.f, 450.f);
-		AddEnemy(ObstacleType::kBarrier, 1950.f, 550.f);
-		AddEnemy(ObstacleType::kBarrier, 2000.f, 550.f);
-
+		//AddObstacle(ObstacleType::kTarSpill, 500.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 550.f, 650.f);
+		AddObstacle(ObstacleType::kBarrier, 650.f, 550.f);
+		//AddObstacle(ObstacleType::kTarSpill, 800.f, 650.f);
+		AddObstacle(ObstacleType::kAcidSpill, 850.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 900.f, 550.f);
+		//AddObstacle(ObstacleType::kTarSpill, 1000.f, 650.f);
+		AddObstacle(ObstacleType::kBarrier, 1100.f, 450.f);
+		AddObstacle(ObstacleType::kAcidSpill, 1150.f, 650.f);
+		//AddObstacle(ObstacleType::kTarSpill, 1400.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 1450.f, 650.f);
+		AddObstacle(ObstacleType::kBarrier, 1750.f, 550.f);
+		//AddObstacle(ObstacleType::kAcidSpill, 1750.f, 450.f);
+		AddObstacle(ObstacleType::kBarrier, 1950.f, 550.f);
+		AddObstacle(ObstacleType::kBarrier, 2000.f, 550.f);
+	 /*
 		AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
 		AddEnemy(ObstacleType::kTarSpill, 2250.f, 450.f);
 		AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
@@ -467,6 +376,7 @@ void World::HandleCollisions()
 			//Apply the pickup effect
 			pickup.Apply(player);
 			pickup.Destroy();
+			
 		}
 
 		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kEnemyProjectile) || MatchesCategories(pair, Category::Type::kEnemyAircraft, Category::Type::kAlliedProjectile))
@@ -476,6 +386,14 @@ void World::HandleCollisions()
 			//Apply the projectile damage to the plane
 			aircraft.Damage(projectile.GetDamage());
 			projectile.Destroy();
+		}
+
+		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kObstacle))
+		{
+			//auto& aircraft = static_cast<Aircraft&>(*pair.first);
+			auto& obs = static_cast<Obstacle&>(*pair.second);
+			obs.Destroy();
+			//std::cout << "Hit an obstacle" << std::endl;
 		}
 
 		/*
@@ -494,13 +412,13 @@ void World::HandleCollisions()
 void World::DestroyEntitiesOutsideView()
 {
 	Command command;
-	command.category = Category::Type::kEnemyAircraft | Category::Type::kProjectile;
+	command.category = Category::Type::kEnemyAircraft | Category::Type::kProjectile | Category::Type::kObstacle;
 	command.action = DerivedAction<Entity>([this](Entity& e, sf::Time)
 	{
 		//Does the object intersect with the battlefield
 		if (!GetBattlefieldBounds().intersects(e.GetBoundingRect()))
 		{
-			std::cout << "Destroying the entity" << std::endl;
+			//std::cout << "Destroying the entity" << std::endl;
 			e.Destroy();
 		}
 	});

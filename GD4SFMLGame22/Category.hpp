@@ -13,6 +13,8 @@ namespace Category
 		kAlliedProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
 		kObstacle = 1 << 7,
+		kPlayer1 = 1 << 8,
+		kPlayer2 = 1 << 9,
 
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
 		kProjectile = kAlliedProjectile | kEnemyProjectile,
