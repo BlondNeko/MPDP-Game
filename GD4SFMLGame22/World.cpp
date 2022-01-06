@@ -48,6 +48,7 @@ void World::Update(sf::Time dt)
 	m_scenegraph.RemoveWrecks();
 
 	SpawnEnemies();
+	SpawnObstacles();
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
@@ -135,6 +136,7 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(leader));
 
 	AddEnemies();
+	AddObstacles();
 }
 
 CommandQueue& World::getCommandQueue()
@@ -283,6 +285,99 @@ void World::AddEnemies()
 	{
 		return lhs.m_x < rhs.m_x;
 	});
+}
+
+void World::SpawnObstacles()
+{
+	//Spawn an enemy when they are relevant - they are relevant when they enter the battlefield bounds
+	while (!m_obstacle_spawn_points.empty() && m_obstacle_spawn_points.back().m_y > GetBattlefieldBounds().top)
+	{
+		ObstacleSpawnPoint spawn = m_obstacle_spawn_points.back();
+		std::unique_ptr<Obstacle> enemy(new Obstacle(spawn.m_type, m_textures));
+		enemy->setPosition(spawn.m_x, spawn.m_y);
+		m_scene_layers[static_cast<int>(Layers::kAir)]->AttachChild(std::move(enemy));
+
+		m_obstacle_spawn_points.pop_back();
+	}
+}
+
+void World::AddObstacle(ObstacleType type, float relX, float relY)
+{
+	ObstacleSpawnPoint spawn(type, relX, relY);
+	m_obstacle_spawn_points.emplace_back(spawn);
+}
+
+void World::AddObstacles()
+{
+	//Add all enemies
+	/*
+	 * AddEnemy(AircraftType::kRaptor, 0.f, 200.f);
+	AddEnemy(AircraftType::kRaptor, 0.f, 100.f);
+	AddEnemy(AircraftType::kRaptor, 100.f, 100.f);
+	AddEnemy(AircraftType::kRaptor, -100.f, 100.f);
+	AddEnemy(AircraftType::kAvenger, -70.f, 400.f);
+	AddEnemy(AircraftType::kAvenger, 70.f, 400.f);
+	AddEnemy(AircraftType::kAvenger, 70.f, 600.f);
+	 */
+
+
+	 //Add obstacles
+	 //450.f, 550.f, 650.f
+	AddObstacle(ObstacleType::kBarrier, 200.f, 450.f);
+	AddObstacle(ObstacleType::kBarrier, 250.f, 650.f);
+	/*
+	AddEnemy(AircraftType::kRaptor, 400.f, 550.f);
+	AddEnemy(AircraftType::kRaptor, 500.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 750.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 750.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 1000.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1100.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 1250.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1400.f, 450.f);
+	AddEnemy(AircraftType::kRaptor, 1500.f, 650.f);
+	AddEnemy(AircraftType::kRaptor, 1750.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 1800.f, 450.f);
+	AddEnemy(AircraftType::kAvenger, 1900.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 2000.f, 550.f);
+	AddEnemy(AircraftType::kAvenger, 2200.f, 450.f);
+
+
+	//Add obstacles
+	/*
+		AddEnemy(ObstacleType::kTarSpill, 500.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 550.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 650.f, 550.f);
+		AddEnemy(ObstacleType::kTarSpill, 800.f, 650.f);
+		AddEnemy(ObstacleType::kAcidSpill, 850.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 900.f, 550.f);
+		AddEnemy(ObstacleType::kTarSpill, 1000.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 1100.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 1150.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 1400.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 1450.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 1750.f, 550.f);
+		AddEnemy(ObstacleType::kAcidSpill, 1750.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 1950.f, 550.f);
+		AddEnemy(ObstacleType::kBarrier, 2000.f, 550.f);
+
+		AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
+		AddEnemy(ObstacleType::kTarSpill, 2250.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 2400.f, 550.f);
+		AddEnemy(ObstacleType::kTarSpill, 2450.f, 650.f);
+		AddEnemy(ObstacleType::kAcidSpill, 2750.f, 450.f);
+		AddEnemy(ObstacleType::kTarSpill, 2850.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3000.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3050.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 3200.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 3350.f, 650.f);
+		AddEnemy(ObstacleType::kBarrier, 3400.f, 450.f);
+		AddEnemy(ObstacleType::kAcidSpill, 3500.f, 650.f);
+		AddEnemy(ObstacleType::kTarSpill, 3550.f, 450.f);
+		AddEnemy(ObstacleType::kBarrier, 3750.f, 550.f);
+
+	 */
+
 }
 
 void World::GuideMissiles()

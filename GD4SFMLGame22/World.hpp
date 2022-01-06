@@ -14,6 +14,8 @@
 #include <array>
 
 #include "CommandQueue.hpp"
+#include "Obstacle.hpp"
+#include "ObstacleType.hpp"
 
 //Foward
 namespace sf
@@ -47,6 +49,10 @@ private:
 	void HandleCollisions();
 	void DestroyEntitiesOutsideView();
 
+	void SpawnObstacles();
+	void AddObstacle(ObstacleType type, float relX, float relY);
+	void AddObstacles();
+
 private:
 	struct SpawnPoint
 	{
@@ -55,6 +61,17 @@ private:
 			
 		}
 		AircraftType m_type;
+		float m_x;
+		float m_y;
+	};
+
+	struct ObstacleSpawnPoint
+	{
+		ObstacleSpawnPoint(ObstacleType type, float x, float y) : m_type(type), m_x(x), m_y(y)
+		{
+
+		}
+		ObstacleType m_type;
 		float m_x;
 		float m_y;
 	};
@@ -74,5 +91,8 @@ private:
 	Aircraft* m_player_aircraft;
 	std::vector<SpawnPoint> m_enemy_spawn_points;
 	std::vector<Aircraft*>	m_active_enemies;
+
+	std::vector<ObstacleSpawnPoint> m_obstacle_spawn_points;
+	std::vector<Obstacle*> m_active_obstacles;
 };
 

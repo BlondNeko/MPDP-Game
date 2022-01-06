@@ -3,6 +3,7 @@ enum class ObstacleType
 {
 	kBarrier,
 	kTarSpill,
-	kAcidSpill
+	kAcidSpill,
+	kObstacleCount
 };
 

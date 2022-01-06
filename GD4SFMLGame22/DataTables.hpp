@@ -57,5 +57,6 @@ std::vector<AircraftData> InitializeAircraftData();
 std::vector<BikeData> InitializeBikeData();
 std::vector<ProjectileData> InitializeProjectileData();
 std::vector<PickupData> InitializePickupData();
+std::vector<ObstacleData> InitializeObstacleData();
 
 

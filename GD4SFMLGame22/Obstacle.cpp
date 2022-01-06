@@ -9,13 +9,13 @@
 
 namespace
 {
-	//const std::vector<ObstacleData> Table = InitializeObstacleData();
+	const std::vector<ObstacleData> Table = InitializeObstacleData();
 }
 
-Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures, const FontHolder& fonts)
+Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures)
 	: Entity(100)
 	, m_type(type)
-	, m_sprite(textures.Get(Textures::kBarrier))
+	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
 	, m_is_marked_for_removal(false)
 {
 	Utility::CentreOrigin(m_sprite);

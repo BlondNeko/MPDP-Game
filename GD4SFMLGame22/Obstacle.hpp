@@ -13,7 +13,7 @@
 class Obstacle : public Entity
 {
 public:
-	Obstacle(ObstacleType type, const TextureHolder& textures, const FontHolder& fonts);
+	Obstacle(ObstacleType type, const TextureHolder& textures);
 	unsigned int GetCategory() const override;
 
 	sf::FloatRect GetBoundingRect() const override;

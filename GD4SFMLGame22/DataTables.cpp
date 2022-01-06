@@ -74,5 +74,13 @@ std::vector<PickupData> InitializePickupData()
 	return data;
 }
 
+std::vector<ObstacleData> InitializeObstacleData()
+{
+	std::vector<ObstacleData> data(static_cast<int>(ObstacleType::kObstacleCount));
 
+	data[static_cast<int>(ObstacleType::kBarrier)].m_texture = Textures::kBarrier;
+	data[static_cast<int>(ObstacleType::kTarSpill)].m_texture = Textures::kTarSpill;
+	data[static_cast<int>(ObstacleType::kAcidSpill)].m_texture = Textures::kAcidSpill;
+	return data;
+}
 
