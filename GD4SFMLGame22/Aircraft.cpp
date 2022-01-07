@@ -20,28 +20,17 @@ namespace
 }
 
 
-Textures ToTextureID(AircraftType type)
-{
-	switch(type)
-	{
-	case AircraftType::kEagle:
-		return Textures::kEagle;
-	case AircraftType::kRaptor:
-		return Textures::kRaptor;
-	case AircraftType::kAvenger:
-		return Textures::kAvenger;
-	}
-	return Textures::kEagle;
-}
-
 Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
-	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
+	, m_explosion(textures.Get(Textures::kExplosion))
 	, m_is_firing(false)
 	, m_is_launching_missile(false)
 , m_fire_countdown(sf::Time::Zero)
 , m_is_marked_for_removal(false)
+, m_show_explosion(true)
+, m_spawned_pickup(false)
 , m_fire_rate(1)
 , m_spread_level(1)
 , m_missile_ammo(2)
@@ -50,7 +39,13 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 , m_travelled_distance(0.f)
 , m_directions_index(0)
 {
+	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
+	m_explosion.SetNumFrames(16);
+	m_explosion.SetDuration(sf::seconds(1));
+
+
 	Utility::CentreOrigin(m_sprite);
+	Utility::CentreOrigin(m_explosion);
 
 	m_fire_command.category = static_cast<int>(Category::Type::kScene);
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time)
@@ -88,7 +83,14 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 
 void Aircraft::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(m_sprite, states);
+	if(IsDestroyed() && m_show_explosion)
+	{
+		target.draw(m_explosion, states);
+	}
+	else
+	{
+		target.draw(m_sprite, states);
+	}
 }
 
 unsigned int Aircraft::GetCategory() const
@@ -143,10 +145,13 @@ void Aircraft::UpdateTexts()
 
 void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
+	UpdateTexts();
+	UpdateRollAnimation();
+
 	if(IsDestroyed())
 	{
 		CheckPickupDrop(commands);
-		m_is_marked_for_removal = true;
+		m_explosion.Update(dt);
 		return;
 	}
 	//Check if bullets or missiles are fired
@@ -154,7 +159,6 @@ void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	// Update enemy movement pattern; apply velocity
 	UpdateMovementPattern(dt);
 	Entity::UpdateCurrent(dt, commands);
-	UpdateTexts();
 }
 
 void Aircraft::UpdateMovementPattern(sf::Time dt)
@@ -288,15 +292,16 @@ sf::FloatRect Aircraft::GetBoundingRect() const
 
 bool Aircraft::IsMarkedForRemoval() const
 {
-	return m_is_marked_for_removal;
+	return IsDestroyed() && (m_explosion.IsFinished() || !m_show_explosion);
 }
 
 void Aircraft::CheckPickupDrop(CommandQueue& commands)
 {
-	if(!IsAllied() && Utility::RandomInt(3) == 0)
+	if(!IsAllied() && Utility::RandomInt(3) == 0 && !m_spawned_pickup)
 	{
 		commands.Push(m_drop_pickup_command);
 	}
+	m_spawned_pickup = true;
 }
 
 void Aircraft::CreatePickup(SceneNode& node, const TextureHolder& textures) const
@@ -304,9 +309,34 @@ void Aircraft::CreatePickup(SceneNode& node, const TextureHolder& textures) cons
 	auto type = static_cast<PickupType>(Utility::RandomInt(static_cast<int>(PickupType::kPickupCount)));
 	std::unique_ptr<Pickup> pickup(new Pickup(type, textures));
 	pickup->setPosition(GetWorldPosition());
-	pickup->SetVelocity(0.f, 1.f);
+	pickup->SetVelocity(0.f, 0.f);
 	node.AttachChild(std::move(pickup));
 }
+
+void Aircraft::Remove()
+{
+	Entity::Remove();
+	m_show_explosion = false;
+}
+
+void Aircraft::UpdateRollAnimation()
+{
+	if (Table[static_cast<int>(m_type)].m_has_roll_animation)
+	{
+		sf::IntRect textureRect = Table[static_cast<int>(m_type)].m_texture_rect;
+
+		// Roll left: Texture rect offset once
+		if (GetVelocity().x < 0.f)
+			textureRect.left += textureRect.width;
+
+		// Roll right: Texture rect offset twice
+		else if (GetVelocity().x > 0.f)
+			textureRect.left += 2 * textureRect.width;
+
+		m_sprite.setTextureRect(textureRect);
+	}
+}
+
 
 
 

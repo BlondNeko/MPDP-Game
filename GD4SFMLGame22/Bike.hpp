@@ -6,14 +6,13 @@
 
 #include "BikeType.hpp"
 #include "CommandQueue.hpp"
-#include "ProjectileType.hpp"
 #include "TextNode.hpp"
 
 class Bike : public Entity
 {
 public:
 
-	Bike(BikeType type, const TextureHolder& textures, const FontHolder& fonts);
+	Bike(BikeType type, const TextureHolder & textures, const FontHolder & fonts);
 	unsigned int GetCategory() const override;
 
 	void IncreaseSpeed(unsigned int speedUp);

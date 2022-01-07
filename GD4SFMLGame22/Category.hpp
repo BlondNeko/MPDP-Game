@@ -12,9 +12,10 @@ namespace Category
 		kPickup = 1 << 4,
 		kAlliedProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
-		kObstacle = 1 << 7,
-		kPlayer1 = 1 << 8,
-		kPlayer2 = 1 << 9,
+		kParticleSystem = 1 << 7,
+		kObstacle = 1 << 8,
+		kPlayer1 = 1 << 9,
+		kPlayer2 = 1 << 10,
 
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
 		kProjectile = kAlliedProjectile | kEnemyProjectile,

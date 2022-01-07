@@ -15,32 +15,10 @@ namespace
 	const std::vector<BikeData> Table = InitializeBikeData();
 }
 
-Textures ToTextureID(BikeType type)
-{
-	switch (type)
-	{
-	case BikeType::kNitro:
-		return Textures::kNitro;
-	case BikeType::kOffroader:
-		return Textures::kOffroader;
-	case BikeType::kRacer:
-		return Textures::kRacer;
-	case BikeType::kSpecialA:
-		return Textures::kSpecialA;
-	case BikeType::kSpecialB:
-		return Textures::kSpecialB;
-	case BikeType::kSpecialC:
-		return Textures::kSpecialA;
-	case BikeType::kSpecialD:
-		return Textures::kSpecialD;
-	}
-	return Textures::kNormal;
-}
-
 Bike::Bike(BikeType type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
-	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_speed(Table[static_cast<int>(type)].m_offroad_resistance)
 	, m_offroad_resistance(Table[static_cast<int>(type)].m_offroad_resistance)
 	, m_is_marked_for_removal(false)

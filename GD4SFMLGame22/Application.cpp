@@ -20,9 +20,7 @@ Application::Application()
 
 	m_fonts.Load(Fonts::Main, "Media/Fonts/Sansation.ttf");
 	m_textures.Load(Textures::kTitleScreen, "Media/Textures/Title1.png");
-	m_textures.Load(Textures::kButtonNormal, "Media/Textures/ButtonB.png");
-	m_textures.Load(Textures::kButtonSelected, "Media/Textures/ButtonA.png");
-	m_textures.Load(Textures::kButtonPressed, "Media/Textures/ButtonD.png");
+	m_textures.Load(Textures::kButtons, "Media/Textures/Buttons.png");
 
 	m_statistics_text.setFont(m_fonts.Get(Fonts::Main));
 	m_statistics_text.setPosition(5.f, 5.f);

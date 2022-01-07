@@ -10,24 +10,22 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <array>
+#include <SFML/Graphics/RenderWindow.hpp>
 
+#include "BloomEffect.hpp"
 #include "CommandQueue.hpp"
 #include "Obstacle.hpp"
 #include "ObstacleType.hpp"
-
-//Foward
-namespace sf
-{
-	class RenderWindow;
-}
 
 
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderWindow& window, FontHolder& font);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
@@ -45,13 +43,14 @@ private:
 	void SpawnEnemies();
 	void AddEnemy(AircraftType type, float relX, float relY);
 	void AddEnemies();
-	void GuideMissiles();
-	void HandleCollisions();
-	void DestroyEntitiesOutsideView();
 
 	void SpawnObstacles();
 	void AddObstacle(ObstacleType type, float relX, float relY);
 	void AddObstacles();
+
+	void GuideMissiles();
+	void HandleCollisions();
+	void DestroyEntitiesOutsideView();
 
 private:
 	struct SpawnPoint
@@ -75,9 +74,11 @@ private:
 		float m_x;
 		float m_y;
 	};
+	
 
 private:
-	sf::RenderWindow& m_window;
+	sf::RenderTarget& m_target;
+	sf::RenderTexture m_scene_texture;
 	sf::View m_camera;
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
@@ -93,6 +94,8 @@ private:
 	std::vector<Aircraft*>	m_active_enemies;
 
 	std::vector<ObstacleSpawnPoint> m_obstacle_spawn_points;
-	std::vector<Obstacle*> m_active_obstacles;
+	std::vector<Obstacle*>	m_active_obstacles;
+
+	BloomEffect m_bloom_effect;
 };
 
