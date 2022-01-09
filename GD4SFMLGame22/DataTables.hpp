@@ -23,6 +23,7 @@ struct AircraftData
 {
 	int m_hitpoints;
 	float m_speed;
+	float m_max_speed;
 	Textures m_texture;
 	sf::IntRect m_texture_rect;
 	sf::Time m_fire_interval;
@@ -47,7 +48,7 @@ struct PickupData
 
 struct ObstacleData
 {
-	//std::function<void(Aircraft&)> m_action;
+	float m_slow_down_amount;
 	Textures m_texture;
 	sf::IntRect m_texture_rect;
 };

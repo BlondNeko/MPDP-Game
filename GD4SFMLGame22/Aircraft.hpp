@@ -24,6 +24,10 @@ public:
 	void UpdateMovementPattern(sf::Time dt);
 	float GetMaxSpeed() const;
 	void Fire();
+	void UseBoost();
+	void IncreaseSpeed(float speed);
+	void DecreaseSpeed(float speed);
+	float GetSpeed();
 	void LaunchMissile();
 	void CreateBullets(SceneNode& node, const TextureHolder& textures) const;
 	void CreateProjectile(SceneNode& node, ProjectileType type, float x_offset, float y_offset, const TextureHolder& textures) const;
@@ -42,7 +46,7 @@ private:
 	void CreatePickup(SceneNode& node, const TextureHolder& textures) const;
 	void CheckPickupDrop(CommandQueue& commands);
 	void UpdateRollAnimation();
-
+	void UpdateSpeed();
 
 private:
 	AircraftType m_type;
@@ -55,6 +59,10 @@ private:
 
 	bool m_is_firing;
 	bool m_is_launching_missile;
+	bool m_boost_ready;
+	bool m_use_boost;
+	float m_speed;
+	unsigned int m_counter;
 
 	sf::Time m_fire_countdown;
 
@@ -66,7 +74,9 @@ private:
 	unsigned int m_fire_rate;
 	unsigned int m_spread_level;
 	unsigned int m_missile_ammo;
+	float m_max_speed;
 	TextNode* m_health_display;
+	TextNode* m_boost_display;
 	TextNode* m_missile_display;
 	float m_travelled_distance;
 	int m_directions_index;

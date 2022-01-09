@@ -12,14 +12,16 @@ std::vector<AircraftData> InitializeAircraftData()
 	std::vector<AircraftData> data(static_cast<int>(AircraftType::kAircraftCount));
 
 	data[static_cast<int>(AircraftType::kEagle)].m_hitpoints = 100;
-	data[static_cast<int>(AircraftType::kEagle)].m_speed = 200.f;
+	data[static_cast<int>(AircraftType::kEagle)].m_speed = 150.f;
+	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 225.f;
 	data[static_cast<int>(AircraftType::kEagle)].m_fire_interval = sf::seconds(1);
 	data[static_cast<int>(AircraftType::kEagle)].m_texture = Textures::kEntities;
 	data[static_cast<int>(AircraftType::kEagle)].m_texture_rect = sf::IntRect(0, 0, 48, 64);
 	data[static_cast<int>(AircraftType::kEagle)].m_has_roll_animation = true;
 
-	data[static_cast<int>(AircraftType::kRaptor)].m_hitpoints = 20;
-	data[static_cast<int>(AircraftType::kRaptor)].m_speed = 80.f;
+	data[static_cast<int>(AircraftType::kRaptor)].m_hitpoints = 80;
+	data[static_cast<int>(AircraftType::kRaptor)].m_speed = 160.f;
+	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 250.f;
 	data[static_cast<int>(AircraftType::kRaptor)].m_fire_interval = sf::Time::Zero;
 	data[static_cast<int>(AircraftType::kRaptor)].m_texture = Textures::kEntities;
 	data[static_cast<int>(AircraftType::kRaptor)].m_texture_rect = sf::IntRect(144, 0, 84, 64);
@@ -29,8 +31,9 @@ std::vector<AircraftData> InitializeAircraftData()
 	data[static_cast<int>(AircraftType::kRaptor)].m_directions.emplace_back(Direction(+45.f, 80.f));
 	data[static_cast<int>(AircraftType::kRaptor)].m_has_roll_animation = false;
 
-	data[static_cast<int>(AircraftType::kAvenger)].m_hitpoints = 40;
-	data[static_cast<int>(AircraftType::kAvenger)].m_speed = 50.f;
+	data[static_cast<int>(AircraftType::kAvenger)].m_hitpoints = 120;
+	data[static_cast<int>(AircraftType::kAvenger)].m_speed = 125.f;
+	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 200.f;
 	data[static_cast<int>(AircraftType::kAvenger)].m_fire_interval = sf::seconds(2);
 	data[static_cast<int>(AircraftType::kAvenger)].m_texture = Textures::kEntities;
 	data[static_cast<int>(AircraftType::kAvenger)].m_texture_rect = sf::IntRect(228, 0, 60, 59);
@@ -127,12 +130,15 @@ std::vector<ObstacleData> InitializeObstacleData()
 
 	data[static_cast<int>(ObstacleType::kTarSpill)].m_texture = Textures::kSpriteSheet;
 	data[static_cast<int>(ObstacleType::kTarSpill)].m_texture_rect = sf::IntRect(116, 26, 45, 19);
+	data[static_cast<int>(ObstacleType::kTarSpill)].m_slow_down_amount = 0.4f;
 
 	data[static_cast<int>(ObstacleType::kAcidSpill)].m_texture = Textures::kSpriteSheet;
 	data[static_cast<int>(ObstacleType::kAcidSpill)].m_texture_rect = sf::IntRect(117, 5, 45, 19);
+	data[static_cast<int>(ObstacleType::kAcidSpill)].m_slow_down_amount = 0.2f;
 
 	data[static_cast<int>(ObstacleType::kBarrier)].m_texture = Textures::kSpriteSheet;
 	data[static_cast<int>(ObstacleType::kBarrier)].m_texture_rect = sf::IntRect(117, 102, 17, 29);
+	data[static_cast<int>(ObstacleType::kBarrier)].m_slow_down_amount = 0.9f;
 	return data;
 }
 

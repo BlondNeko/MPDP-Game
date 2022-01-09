@@ -19,7 +19,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font)
 	, m_scenegraph()
 	, m_scene_layers()
 	, m_world_bounds(0.f, 0.f,  5000, m_camera.getSize().x)
-	, m_spawn_position(m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f + 50.f)
+	, m_spawn_position(200.f, 550.f)//m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f + 50.f
 	, m_scrollspeed(-50.f)
 	, m_player_aircraft(nullptr)
 {
@@ -49,7 +49,6 @@ void World::Update(sf::Time dt)
 	//Remove all destroyed entities
 	m_scenegraph.RemoveWrecks();
 
-	//SpawnEnemies();
 	SpawnObstacles();
 
 	//Apply movement
@@ -113,24 +112,25 @@ void World::BuildScene()
 	}
 
 	//Prepare the background
-	sf::Texture& jungle_texture = m_textures.Get(Textures::kCity1);
+	sf::Texture& city_texture = m_textures.Get(Textures::kCity1);
 	//sf::IntRect textureRect(m_world_bounds);
 	//Tile the texture to cover our world
-	jungle_texture.setRepeated(true);
+	city_texture.setRepeated(true);
 
 	float view_height = m_camera.getSize().y;
 	sf::IntRect texture_rect(m_world_bounds);
 	texture_rect.height += static_cast<int>(view_height);
 
 	//Add the background sprite to our scene
-	std::unique_ptr<SpriteNode> jungle_sprite(new SpriteNode(jungle_texture, texture_rect));
-	jungle_sprite->setPosition(m_world_bounds.left, m_world_bounds.top - view_height);
-	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(jungle_sprite));
+	std::unique_ptr<SpriteNode> city_sprite(new SpriteNode(city_texture, texture_rect));
+	city_sprite->setPosition(m_world_bounds.left, m_world_bounds.top - view_height);
+	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(city_sprite));
 
 	// Add the finish line to the scene
 	sf::Texture& finish_texture = m_textures.Get(Textures::kFinishLine);
 	std::unique_ptr<SpriteNode> finish_sprite(new SpriteNode(finish_texture));
-	finish_sprite->setPosition(0.f, -76.f);
+	finish_sprite->setPosition(500.f, 4500.f);
+	finish_sprite->setRotation(-90);
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(finish_sprite));
 
 	// Add particle node to the scene
@@ -147,16 +147,6 @@ void World::BuildScene()
 	m_player_aircraft->setPosition(m_spawn_position);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(leader));
 
-	// //Add two escorts
-	// std::unique_ptr<Aircraft> leftEscort(new Aircraft(AircraftType::kRaptor, m_textures, m_fonts));
-	// leftEscort->setPosition(-80.f, 50.f);
-	// m_player_aircraft->AttachChild(std::move(leftEscort));
-	//
-	// std::unique_ptr<Aircraft> rightEscort(new Aircraft(AircraftType::kRaptor, m_textures, m_fonts));
-	// rightEscort->setPosition(80.f, 50.f);
-	// m_player_aircraft->AttachChild(std::move(rightEscort));
-
-	//AddEnemies();
 	AddObstacles();
 }
 
@@ -186,7 +176,7 @@ void World::AdaptPlayerVelocity()
 	//if moving diagonally then reduce velocity
 	if (velocity.x != 0.f && velocity.y != 0.f)
 	{
-		m_player_aircraft->SetVelocity(velocity / std::sqrt(2.f));
+		m_player_aircraft->SetVelocity((velocity / std::sqrt(2.f)));
 	}
 	//Add scrolling velocity
 	m_player_aircraft->Accelerate(m_scrollspeed, 0.f);
@@ -199,70 +189,11 @@ sf::FloatRect World::GetViewBounds() const
 
 sf::FloatRect World::GetBattlefieldBounds() const
 {
-	//Return camera bounds + a small area at the top where enemies spawn offscreen
+	//Return camera bounds + wider width where obtacles should spawn
 	sf::FloatRect bounds = GetViewBounds();
-	bounds.top -= 100.f;
-	bounds.height += 100.f;
+	bounds.width += 300.f;
 
 	return bounds;
-}
-
-void World::SpawnEnemies()
-{
-	//Spawn an enemy when they are relevant - they are relevant when they enter the battlefield bounds
-	while(!m_enemy_spawn_points.empty() && m_enemy_spawn_points.back().m_y > GetBattlefieldBounds().top)
-	{
-		SpawnPoint spawn = m_enemy_spawn_points.back();
-		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.m_type, m_textures, m_fonts));
-		enemy->setPosition(spawn.m_x, spawn.m_y);
-		enemy->setRotation(180.f);
-		m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(enemy));
-
-		m_enemy_spawn_points.pop_back();
-		
-	}
-}
-
-void World::AddEnemy(AircraftType type, float relX, float relY)
-{
-	SpawnPoint spawn(type, m_spawn_position.x + relX, m_spawn_position.y - relY);
-	m_enemy_spawn_points.emplace_back(spawn);
-}
-
-void World::AddEnemies()
-{
-	//Add all enemies
-	AddEnemy(AircraftType::kRaptor, 0.f, 500.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 1000.f);
-	AddEnemy(AircraftType::kRaptor, +100.f, 1150.f);
-	AddEnemy(AircraftType::kRaptor, -100.f, 1150.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 1500.f);
-	AddEnemy(AircraftType::kAvenger, -70.f, 1500.f);
-	AddEnemy(AircraftType::kAvenger, -70.f, 1710.f);
-	AddEnemy(AircraftType::kAvenger, 70.f, 1700.f);
-	AddEnemy(AircraftType::kAvenger, 30.f, 1850.f);
-	AddEnemy(AircraftType::kRaptor, 300.f, 2200.f);
-	AddEnemy(AircraftType::kRaptor, -300.f, 2200.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 2200.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 2500.f);
-	AddEnemy(AircraftType::kAvenger, -300.f, 2700.f);
-	AddEnemy(AircraftType::kAvenger, -300.f, 2700.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 3000.f);
-	AddEnemy(AircraftType::kRaptor, 250.f, 3250.f);
-	AddEnemy(AircraftType::kRaptor, -250.f, 3250.f);
-	AddEnemy(AircraftType::kAvenger, 0.f, 3500.f);
-	AddEnemy(AircraftType::kAvenger, 0.f, 3700.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 3800.f);
-	AddEnemy(AircraftType::kAvenger, 0.f, 4000.f);
-	AddEnemy(AircraftType::kAvenger, -200.f, 4200.f);
-	AddEnemy(AircraftType::kRaptor, 200.f, 4200.f);
-	AddEnemy(AircraftType::kRaptor, 0.f, 4400.f);
-
-	//Sort according to y value so that lower enemies are checked first
-	std::sort(m_enemy_spawn_points.begin(), m_enemy_spawn_points.end(), [](SpawnPoint lhs, SpawnPoint rhs)
-	{
-		return lhs.m_y < rhs.m_y;
-	});
 }
 
 void World::SpawnObstacles()
@@ -290,7 +221,6 @@ void World::AddObstacles()
 	//450.f, 550.f, 650.f ( range of the road)
 	AddObstacle(ObstacleType::kBarrier, 200.f, 450.f);
 	AddObstacle(ObstacleType::kBarrier, 250.f, 650.f);
-
 	AddObstacle(ObstacleType::kTarSpill, 500.f, 450.f);
 	AddObstacle(ObstacleType::kBarrier, 550.f, 650.f);
 	AddObstacle(ObstacleType::kBarrier, 650.f, 550.f);
@@ -306,24 +236,23 @@ void World::AddObstacles()
 	AddObstacle(ObstacleType::kAcidSpill, 1750.f, 450.f);
 	AddObstacle(ObstacleType::kBarrier, 1950.f, 550.f);
 	AddObstacle(ObstacleType::kBarrier, 2000.f, 550.f);
-	/*
-	   AddEnemy(ObstacleType::kAcidSpill, 2250.f, 550.f);
-	   AddEnemy(ObstacleType::kTarSpill, 2250.f, 450.f);
-	   AddEnemy(ObstacleType::kBarrier, 2300.f, 650.f);
-	   AddEnemy(ObstacleType::kBarrier, 2400.f, 550.f);
-	   AddEnemy(ObstacleType::kTarSpill, 2450.f, 650.f);
-	   AddEnemy(ObstacleType::kAcidSpill, 2750.f, 450.f);
-	   AddEnemy(ObstacleType::kTarSpill, 2850.f, 450.f);
-	   AddEnemy(ObstacleType::kAcidSpill, 3000.f, 450.f);
-	   AddEnemy(ObstacleType::kAcidSpill, 3050.f, 450.f);
-	   AddEnemy(ObstacleType::kBarrier, 3200.f, 650.f);
-	   AddEnemy(ObstacleType::kTarSpill, 3350.f, 650.f);
-	   AddEnemy(ObstacleType::kBarrier, 3400.f, 450.f);
-	   AddEnemy(ObstacleType::kAcidSpill, 3500.f, 650.f);
-	   AddEnemy(ObstacleType::kTarSpill, 3550.f, 450.f);
-	   AddEnemy(ObstacleType::kBarrier, 3750.f, 550.f);
+	
+	AddObstacle(ObstacleType::kAcidSpill, 2250.f, 550.f);
+	AddObstacle(ObstacleType::kTarSpill, 2250.f, 450.f);
+	AddObstacle(ObstacleType::kBarrier, 2300.f, 650.f);
+	AddObstacle(ObstacleType::kBarrier, 2400.f, 550.f);
+	AddObstacle(ObstacleType::kTarSpill, 2450.f, 650.f);
+	AddObstacle(ObstacleType::kAcidSpill, 2750.f, 450.f);
+    AddObstacle(ObstacleType::kTarSpill, 2850.f, 450.f);
+    AddObstacle(ObstacleType::kAcidSpill, 3000.f, 450.f);
+    AddObstacle(ObstacleType::kAcidSpill, 3050.f, 450.f);
+    AddObstacle(ObstacleType::kBarrier, 3200.f, 650.f);
+    AddObstacle(ObstacleType::kTarSpill, 3350.f, 650.f);
+    AddObstacle(ObstacleType::kBarrier, 3400.f, 450.f);
+    AddObstacle(ObstacleType::kAcidSpill, 3500.f, 650.f);
+    AddObstacle(ObstacleType::kTarSpill, 3550.f, 450.f);
+    AddObstacle(ObstacleType::kBarrier, 3750.f, 550.f);
 
-	*/
 
 }
 
@@ -427,7 +356,10 @@ void World::HandleCollisions()
 
 		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kObstacle))
 		{
+			auto& aircraft = static_cast<Aircraft&>(*pair.first);
 			auto& obstacle = static_cast<Obstacle&>(*pair.second);
+			//Apply the projectile damage to the plane
+			aircraft.DecreaseSpeed(obstacle.GetSlowdown());
 			obstacle.Destroy();
 		}
 

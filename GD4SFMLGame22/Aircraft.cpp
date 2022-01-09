@@ -13,31 +13,35 @@
 #include "Pickup.hpp"
 #include "PickupType.hpp"
 
-
 namespace
 {
 	const std::vector<AircraftData> Table = InitializeAircraftData();
 }
-
 
 Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_explosion(textures.Get(Textures::kExplosion))
+	, m_speed(Table[static_cast<int>(type)].m_speed)
+	, m_max_speed(Table[static_cast<int>(type)].m_max_speed)
 	, m_is_firing(false)
 	, m_is_launching_missile(false)
-, m_fire_countdown(sf::Time::Zero)
-, m_is_marked_for_removal(false)
-, m_show_explosion(true)
-, m_spawned_pickup(false)
-, m_fire_rate(1)
-, m_spread_level(1)
-, m_missile_ammo(2)
-, m_health_display(nullptr)
-, m_missile_display(nullptr)
-, m_travelled_distance(0.f)
-, m_directions_index(0)
+	, m_boost_ready(true)
+	, m_use_boost(false)
+	, m_fire_countdown(sf::Time::Zero)
+	, m_is_marked_for_removal(false)
+	, m_show_explosion(true)
+	, m_spawned_pickup(false)
+	, m_fire_rate(1)
+	, m_spread_level(1)
+	, m_missile_ammo(2)
+	, m_health_display(nullptr)
+	, m_missile_display(nullptr)
+	, m_boost_display(nullptr)
+	, m_travelled_distance(0.f)
+	, m_directions_index(0)
+	, m_counter(0)
 {
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);
@@ -68,6 +72,10 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
 	m_health_display = healthDisplay.get();
 	AttachChild(std::move(healthDisplay));
+
+	std::unique_ptr<TextNode> boostDisplay(new TextNode(fonts, ""));
+	m_boost_display = healthDisplay.get();
+	AttachChild(std::move(boostDisplay));
 
 	if (Aircraft::GetCategory() == static_cast<int>(Category::kPlayerAircraft))
 	{
@@ -141,12 +149,24 @@ void Aircraft::UpdateTexts()
 		}
 	}
 
+	if (m_boost_display)
+	{
+		if (m_boost_ready)
+		{
+			m_boost_display->SetString("Boost Ready!");
+		}
+		else
+		{
+			m_boost_display->SetString("");
+		}
+	}
 }
 
 void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	UpdateTexts();
 	UpdateRollAnimation();
+	UpdateSpeed();
 
 	if(IsDestroyed())
 	{
@@ -187,9 +207,42 @@ void Aircraft::UpdateMovementPattern(sf::Time dt)
 
 }
 
+void Aircraft::UpdateSpeed()
+{
+	//To be cleaned up!
+	if (m_use_boost)
+	{
+		m_speed += 2.f;
+		++m_counter;
+		if (m_counter > 250)
+		{
+			m_use_boost = false;
+			m_counter = 0;
+		}
+	}
+
+	if (m_speed < 100.f)
+	{
+		m_speed += 2.f;
+	}
+	else if (m_speed < m_max_speed)
+	{
+		m_speed += 0.2f;
+	}
+	else if(!m_use_boost && m_speed > m_max_speed)
+	{
+		m_speed -= 2.f;
+	}
+}
+
 float Aircraft::GetMaxSpeed() const
 {
-	return Table[static_cast<int>(m_type)].m_speed;
+	return Table[static_cast<int>(m_type)].m_max_speed;
+}
+
+float Aircraft::GetSpeed()
+{
+	return m_speed;
 }
 
 void Aircraft::Fire()
@@ -200,6 +253,30 @@ void Aircraft::Fire()
 		m_is_firing = true;
 	}
 }
+
+void Aircraft::UseBoost()
+{;
+	if(m_boost_ready && !m_use_boost)
+	{
+		m_boost_ready = false;
+		m_use_boost = true;
+	}
+}
+
+void Aircraft::IncreaseSpeed(float speedUp)
+{
+	m_speed = m_speed + (m_speed * speedUp);
+	if (m_speed > m_max_speed)
+		m_speed = m_max_speed;
+}
+
+void Aircraft::DecreaseSpeed(float speedDown)
+{
+	m_speed = m_speed - (m_speed * speedDown);
+	if (m_speed < 0)
+		m_speed = 0;
+}
+
 
 void Aircraft::LaunchMissile()
 {
@@ -336,7 +413,3 @@ void Aircraft::UpdateRollAnimation()
 		m_sprite.setTextureRect(textureRect);
 	}
 }
-
-
-
-

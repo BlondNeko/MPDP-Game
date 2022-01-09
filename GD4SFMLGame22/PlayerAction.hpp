@@ -7,5 +7,6 @@ enum class PlayerAction
 	kMoveDown,
 	kFire,
 	kLaunchMissile,
+	kBoost,
 	kActionCount
 };

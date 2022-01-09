@@ -16,6 +16,7 @@ Obstacle::Obstacle(ObstacleType type, const TextureHolder& textures)
 	: Entity(100)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
+	, m_slow_down_amount(Table[static_cast<int>(type)].m_slow_down_amount)
 	, m_is_marked_for_removal(false)
 {
 	Utility::CentreOrigin(m_sprite);
@@ -29,6 +30,11 @@ unsigned Obstacle::GetCategory() const
 sf::FloatRect Obstacle::GetBoundingRect() const
 {
 	return GetWorldTransform().transformRect(m_sprite.getGlobalBounds());
+}
+
+float Obstacle::GetSlowdown() const
+{
+	return m_slow_down_amount;
 }
 
 bool Obstacle::IsMarkedForRemoval() const

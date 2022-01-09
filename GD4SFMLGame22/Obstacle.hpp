@@ -18,6 +18,7 @@ public:
 
 	sf::FloatRect GetBoundingRect() const override;
 	bool IsMarkedForRemoval() const override;
+	float GetSlowdown() const;
 
 private:
 	void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -26,6 +27,7 @@ private:
 private:
 	ObstacleType m_type;
 	sf::Sprite m_sprite;
+	float m_slow_down_amount;
 
 	bool m_is_marked_for_removal;
 };

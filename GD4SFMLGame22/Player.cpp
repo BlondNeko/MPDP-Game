@@ -11,7 +11,7 @@ struct AircraftMover
 
 	void operator()(Aircraft& aircraft, sf::Time) const
 	{
-		aircraft.Accelerate(velocity * aircraft.GetMaxSpeed());
+		aircraft.Accelerate(velocity * aircraft.GetSpeed());
 	}
 
 	sf::Vector2f velocity;
@@ -26,6 +26,7 @@ Player::Player() : m_current_mission_status(MissionStatus::kMissionRunning)
 	m_key_binding[sf::Keyboard::S] = PlayerAction::kMoveDown;
 	m_key_binding[sf::Keyboard::Space] = PlayerAction::kFire;
 	m_key_binding[sf::Keyboard::M] = PlayerAction::kLaunchMissile;
+	m_key_binding[sf::Keyboard::Q] = PlayerAction::kBoost;
 
 	//Set initial action bindings
 	InitialiseActions();
@@ -116,6 +117,12 @@ void Player::InitialiseActions()
 		a.Fire();
 	});
 
+	m_action_binding[PlayerAction::kBoost].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
+		)
+	{
+		a.UseBoost();
+	});
+
 	m_action_binding[PlayerAction::kLaunchMissile].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
 		)
 	{
@@ -132,6 +139,7 @@ bool Player::IsRealtimeAction(PlayerAction action)
 	case PlayerAction::kMoveUp:
 	case PlayerAction::kMoveDown:
 	case PlayerAction::kFire:
+	case PlayerAction::kBoost:
 		return true;
 	default:
 		return false;
