@@ -40,7 +40,6 @@ void World::Update(sf::Time dt)
 
 	m_player_aircraft->SetVelocity(0.f, 0.f);
 	DestroyEntitiesOutsideView();
-	GuideMissiles();
 
 	//Forward commands to the scenegraph until the command queue is empty
 	while(!m_command_queue.IsEmpty())
@@ -54,6 +53,7 @@ void World::Update(sf::Time dt)
 	m_scenegraph.RemoveWrecks();
 
 	SpawnObstacles();
+	SpawnPickups();
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
@@ -92,7 +92,7 @@ bool World::HasPlayerReachedEnd() const
 
 void World::LoadTextures()
 {
-	m_textures.Load(Textures::kSpriteSheet, "Media/Sprites/SpriteSheet.png");
+	m_textures.Load(Textures::kSpriteSheet, "Media/Sprites/SpriteSheet2.png");
 
 	m_textures.Load(Textures::kFinish1, "Media/Sprites/FinishLine1.png");
 	m_textures.Load(Textures::kFinish2, "Media/Sprites/FinishLine2.png");
@@ -157,6 +157,7 @@ void World::BuildScene()
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(leader));
 
 	AddObstacles();
+	AddPickups();
 }
 
 CommandQueue& World::getCommandQueue()
@@ -266,49 +267,36 @@ void World::AddObstacles()
 
 }
 
-void World::GuideMissiles()
+void World::SpawnPickups()
 {
-	// Setup command that stores all enemies in mActiveEnemies
-	Command enemyCollector;
-	enemyCollector.category = Category::kEnemyAircraft;
-	enemyCollector.action = DerivedAction<Aircraft>([this](Aircraft& enemy, sf::Time)
+	//Spawn an obstacle when they are relevant - they are relevant when they enter the battlefield bounds
+	while (!m_pickup_spawn_points.empty() && m_pickup_spawn_points.back().m_y > GetBattlefieldBounds().top)
 	{
-		if (!enemy.IsDestroyed())
-			m_active_enemies.push_back(&enemy);
-	});
+		PickupSpawnPoint spawn = m_pickup_spawn_points.back();
+		std::unique_ptr<Pickup> pickup(new Pickup(spawn.m_type, m_textures));
+		pickup->setPosition(spawn.m_x, spawn.m_y);
+		m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(pickup));
+		m_pickup_spawn_points.pop_back();
+	}
+}
 
-	// Setup command that guides all missiles to the enemy which is currently closest to the player
-	Command missileGuider;
-	missileGuider.category = Category::kAlliedProjectile;
-	missileGuider.action = DerivedAction<Projectile>([this](Projectile& missile, sf::Time)
-	{
-		// Ignore unguided bullets
-		if (!missile.IsGuided())
-			return;
+void World::AddPickup(PickupType type, float relX, float relY)
+{
+	PickupSpawnPoint spawn(type, relX, relY);
+	m_pickup_spawn_points.emplace_back(spawn);
+}
 
-		float minDistance = std::numeric_limits<float>::max();
-		Aircraft* closestEnemy = nullptr;
+void World::AddPickups()
+{
+	//Add obstacles
+	//450.f, 550.f, 650.f ( range of the road)
+	AddPickup(PickupType::kBoost, 500.f, 500.f);
+	AddPickup(PickupType::kBoost, 1000.f, 650.f);
+	AddPickup(PickupType::kBoost, 1500.f, 600.f);
+	AddPickup(PickupType::kBoost, 2250.f, 450.f);
+	AddPickup(PickupType::kBoost, 3000.f, 500.f);
+	AddPickup(PickupType::kBoost, 3500.f, 600.f);
 
-		// Find closest enemy
-		for(Aircraft * enemy :  m_active_enemies)
-		{
-			float enemyDistance = Distance(missile, *enemy);
-
-			if (enemyDistance < minDistance)
-			{
-				closestEnemy = enemy;
-				minDistance = enemyDistance;
-			}
-		}
-
-		if (closestEnemy)
-			missile.GuideTowards(closestEnemy->GetWorldPosition());
-	});
-
-	// Push commands, reset active enemies
-	m_command_queue.Push(enemyCollector);
-	m_command_queue.Push(missileGuider);
-	m_active_enemies.clear();
 }
 
 bool MatchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)

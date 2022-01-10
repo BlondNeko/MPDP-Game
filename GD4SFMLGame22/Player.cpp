@@ -24,8 +24,6 @@ Player::Player() : m_current_mission_status(MissionStatus::kMissionRunning)
 	m_key_binding[sf::Keyboard::D] = PlayerAction::kMoveRight;
 	m_key_binding[sf::Keyboard::W] = PlayerAction::kMoveUp;
 	m_key_binding[sf::Keyboard::S] = PlayerAction::kMoveDown;
-	m_key_binding[sf::Keyboard::Space] = PlayerAction::kFire;
-	m_key_binding[sf::Keyboard::M] = PlayerAction::kLaunchMissile;
 	m_key_binding[sf::Keyboard::Q] = PlayerAction::kBoost;
 
 	//Set initial action bindings
@@ -111,22 +109,11 @@ void Player::InitialiseActions()
 	m_action_binding[PlayerAction::kMoveUp].action = DerivedAction<Aircraft>(AircraftMover(0.f, -1));
 	m_action_binding[PlayerAction::kMoveDown].action = DerivedAction<Aircraft>(AircraftMover(0, 1));
 
-	m_action_binding[PlayerAction::kFire].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
-		)
-	{
-		a.Fire();
-	});
 
 	m_action_binding[PlayerAction::kBoost].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
 		)
 	{
 		a.UseBoost();
-	});
-
-	m_action_binding[PlayerAction::kLaunchMissile].action = DerivedAction<Aircraft>([](Aircraft& a, sf::Time
-		)
-	{
-		a.LaunchMissile();
 	});
 }
 
@@ -138,7 +125,6 @@ bool Player::IsRealtimeAction(PlayerAction action)
 	case PlayerAction::kMoveRight:
 	case PlayerAction::kMoveUp:
 	case PlayerAction::kMoveDown:
-	case PlayerAction::kFire:
 	case PlayerAction::kBoost:
 		return true;
 	default:

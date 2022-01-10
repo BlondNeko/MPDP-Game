@@ -20,6 +20,7 @@
 #include "CommandQueue.hpp"
 #include "Obstacle.hpp"
 #include "ObstacleType.hpp"
+#include "PickupType.hpp"
 #include "SoundPlayer.hpp"
 
 
@@ -46,22 +47,15 @@ private:
 	void AddObstacle(ObstacleType type, float relX, float relY);
 	void AddObstacles();
 
-	void GuideMissiles();
+	void SpawnPickups();
+	void AddPickup(PickupType type, float relX, float relY);
+	void AddPickups();
+
 	void HandleCollisions();
 	void DestroyEntitiesOutsideView();
 	void UpdateSounds();
 
 private:
-	struct SpawnPoint
-	{
-		SpawnPoint(AircraftType type, float x, float y) : m_type(type), m_x(x), m_y(y)
-		{
-			
-		}
-		AircraftType m_type;
-		float m_x;
-		float m_y;
-	};
 
 	struct ObstacleSpawnPoint
 	{
@@ -70,6 +64,17 @@ private:
 
 		}
 		ObstacleType m_type;
+		float m_x;
+		float m_y;
+	};
+
+	struct PickupSpawnPoint
+	{
+		PickupSpawnPoint(PickupType type, float x, float y) : m_type(type), m_x(x), m_y(y)
+		{
+
+		}
+		PickupType m_type;
 		float m_x;
 		float m_y;
 	};
@@ -90,11 +95,11 @@ private:
 	sf::Vector2f m_spawn_position;
 	float m_scrollspeed;
 	Aircraft* m_player_aircraft;
-	std::vector<SpawnPoint> m_enemy_spawn_points;
-	std::vector<Aircraft*>	m_active_enemies;
+	//std::vector<Aircraft*>	m_active_enemies;
 
 	std::vector<ObstacleSpawnPoint> m_obstacle_spawn_points;
-	std::vector<Obstacle*>	m_active_obstacles;
+	std::vector<PickupSpawnPoint> m_pickup_spawn_points;
+	//std::vector<Obstacle*>	m_active_obstacles;
 
 	BloomEffect m_bloom_effect;
 };

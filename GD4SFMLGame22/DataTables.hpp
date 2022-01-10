@@ -74,4 +74,3 @@ std::vector<ProjectileData> InitializeProjectileData();
 std::vector<PickupData> InitializePickupData();
 std::vector<ParticleData> InitializeParticleData();
 std::vector<ObstacleData> InitializeObstacleData();
-std::vector<BikeData> InitializeBikeData();
