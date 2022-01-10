@@ -11,42 +11,75 @@ std::vector<AircraftData> InitializeAircraftData()
 {
 	std::vector<AircraftData> data(static_cast<int>(AircraftType::kAircraftCount));
 
-	data[static_cast<int>(AircraftType::kEagle)].m_hitpoints = 100;
-	data[static_cast<int>(AircraftType::kEagle)].m_speed = 150.f;
-	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 225.f;
-	data[static_cast<int>(AircraftType::kEagle)].m_fire_interval = sf::seconds(1);
-	data[static_cast<int>(AircraftType::kEagle)].m_texture = Textures::kEntities;
-	data[static_cast<int>(AircraftType::kEagle)].m_texture_rect = sf::IntRect(0, 0, 48, 64);
-	data[static_cast<int>(AircraftType::kEagle)].m_has_roll_animation = true;
+	data[static_cast<int>(AircraftType::kNormal)].m_hitpoints = 100;
+	data[static_cast<int>(AircraftType::kNormal)].m_speed = 200.f;
+	data[static_cast<int>(AircraftType::kNormal)].m_max_speed = 250.f;
+	data[static_cast<int>(AircraftType::kNormal)].m_fire_interval = sf::seconds(1);
+	data[static_cast<int>(AircraftType::kNormal)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kNormal)].m_texture_rect = sf::IntRect(0, 0, 57, 29);
+	data[static_cast<int>(AircraftType::kNormal)].m_has_roll_animation = true;
+	data[static_cast<int>(AircraftType::kNormal)].m_offroad_resistance = 0.2f;
 
-	data[static_cast<int>(AircraftType::kRaptor)].m_hitpoints = 80;
-	data[static_cast<int>(AircraftType::kRaptor)].m_speed = 160.f;
-	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 250.f;
-	data[static_cast<int>(AircraftType::kRaptor)].m_fire_interval = sf::Time::Zero;
-	data[static_cast<int>(AircraftType::kRaptor)].m_texture = Textures::kEntities;
-	data[static_cast<int>(AircraftType::kRaptor)].m_texture_rect = sf::IntRect(144, 0, 84, 64);
-	//AI
-	data[static_cast<int>(AircraftType::kRaptor)].m_directions.emplace_back(Direction(+45.f, 80.f));
-	data[static_cast<int>(AircraftType::kRaptor)].m_directions.emplace_back(Direction(-45.f, 160.f));
-	data[static_cast<int>(AircraftType::kRaptor)].m_directions.emplace_back(Direction(+45.f, 80.f));
-	data[static_cast<int>(AircraftType::kRaptor)].m_has_roll_animation = false;
+	data[static_cast<int>(AircraftType::KNitro)].m_hitpoints = 80;
+	data[static_cast<int>(AircraftType::KNitro)].m_speed = 210.f;
+	data[static_cast<int>(AircraftType::KNitro)].m_max_speed = 275.f;
+	data[static_cast<int>(AircraftType::KNitro)].m_fire_interval = sf::Time::Zero;
+	data[static_cast<int>(AircraftType::KNitro)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::KNitro)].m_texture_rect = sf::IntRect(0, 30, 57, 29);
+	data[static_cast<int>(AircraftType::KNitro)].m_offroad_resistance = 0.1f;
 
-	data[static_cast<int>(AircraftType::kAvenger)].m_hitpoints = 120;
-	data[static_cast<int>(AircraftType::kAvenger)].m_speed = 125.f;
-	data[static_cast<int>(AircraftType::kEagle)].m_max_speed = 200.f;
-	data[static_cast<int>(AircraftType::kAvenger)].m_fire_interval = sf::seconds(2);
-	data[static_cast<int>(AircraftType::kAvenger)].m_texture = Textures::kEntities;
-	data[static_cast<int>(AircraftType::kAvenger)].m_texture_rect = sf::IntRect(228, 0, 60, 59);
-	//AI
-	data[static_cast<int>(AircraftType::kAvenger)].m_directions.emplace_back(Direction(+45.f, 50.f));
-	data[static_cast<int>(AircraftType::kAvenger)].m_directions.emplace_back(Direction(0.f, 50.f));
-	data[static_cast<int>(AircraftType::kAvenger)].m_directions.emplace_back(Direction(-45.f, 100.f));
-	data[static_cast<int>(AircraftType::kAvenger)].m_directions.emplace_back(Direction(0.f, 50.f));
-	data[static_cast<int>(AircraftType::kAvenger)].m_directions.emplace_back(Direction(+45.f, 50.f));
+	data[static_cast<int>(AircraftType::kOffroader)].m_hitpoints = 120;
+	data[static_cast<int>(AircraftType::kOffroader)].m_speed = 180.f;
+	data[static_cast<int>(AircraftType::kOffroader)].m_max_speed = 225.f;
+	data[static_cast<int>(AircraftType::kOffroader)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kOffroader)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kOffroader)].m_texture_rect = sf::IntRect(0, 60, 57, 29);
+	data[static_cast<int>(AircraftType::kOffroader)].m_offroad_resistance = 0.3f;
+
+	data[static_cast<int>(AircraftType::kRacer)].m_hitpoints = 120;
+	data[static_cast<int>(AircraftType::kRacer)].m_speed = 220.f;
+	data[static_cast<int>(AircraftType::kRacer)].m_max_speed = 250.f;
+	data[static_cast<int>(AircraftType::kRacer)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kRacer)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kRacer)].m_texture_rect = sf::IntRect(0, 90, 57, 29);
+	data[static_cast<int>(AircraftType::kRacer)].m_offroad_resistance = 0.2f;
+
+	data[static_cast<int>(AircraftType::kSpecialA)].m_hitpoints = 80;
+	data[static_cast<int>(AircraftType::kSpecialA)].m_speed = 180.f;
+	data[static_cast<int>(AircraftType::kSpecialA)].m_max_speed = 275.f;
+	data[static_cast<int>(AircraftType::kSpecialA)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kSpecialA)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kSpecialA)].m_texture_rect = sf::IntRect(0, 120, 26, 33);
+	data[static_cast<int>(AircraftType::kSpecialA)].m_offroad_resistance = 0.3f;
+
+	data[static_cast<int>(AircraftType::kSpecialB)].m_hitpoints = 50;
+	data[static_cast<int>(AircraftType::kSpecialB)].m_speed = 180.f;
+	data[static_cast<int>(AircraftType::kSpecialB)].m_max_speed = 300.f;
+	data[static_cast<int>(AircraftType::kSpecialB)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kSpecialB)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kSpecialB)].m_texture_rect = sf::IntRect(0, 154, 25, 25);
+	data[static_cast<int>(AircraftType::kSpecialB)].m_offroad_resistance = 0.2f;
+
+	data[static_cast<int>(AircraftType::kSpecialC)].m_hitpoints = 150;
+	data[static_cast<int>(AircraftType::kSpecialC)].m_speed = 150.f;
+	data[static_cast<int>(AircraftType::kSpecialC)].m_max_speed = 250.f;
+	data[static_cast<int>(AircraftType::kSpecialC)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kSpecialC)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kSpecialC)].m_texture_rect = sf::IntRect(0, 0, 59, 32);
+	data[static_cast<int>(AircraftType::kSpecialC)].m_offroad_resistance = 0.5f;
+
+	data[static_cast<int>(AircraftType::kSpecialD)].m_hitpoints = 150;
+	data[static_cast<int>(AircraftType::kSpecialD)].m_speed = 150.f;
+	data[static_cast<int>(AircraftType::kSpecialD)].m_max_speed = 250.f;
+	data[static_cast<int>(AircraftType::kSpecialD)].m_fire_interval = sf::seconds(2);
+	data[static_cast<int>(AircraftType::kSpecialD)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(AircraftType::kSpecialD)].m_texture_rect = sf::IntRect(0, 213, 59, 32);
+	data[static_cast<int>(AircraftType::kSpecialD)].m_offroad_resistance = 0.5f;
 
 	return data;
 }
 
+/*
 std::vector<BikeData> InitializeBikeData()
 {
 	std::vector<BikeData> data(static_cast<int>(BikeType::kBikeCount));
@@ -101,6 +134,7 @@ std::vector<BikeData> InitializeBikeData()
 
 	return data;
 }
+*/
 
 std::vector<ProjectileData> InitializeProjectileData()
 {

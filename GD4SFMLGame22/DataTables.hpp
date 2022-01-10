@@ -24,6 +24,7 @@ struct AircraftData
 	int m_hitpoints;
 	float m_speed;
 	float m_max_speed;
+	float m_offroad_resistance;
 	Textures m_texture;
 	sf::IntRect m_texture_rect;
 	sf::Time m_fire_interval;

@@ -4,18 +4,22 @@
 #include <iostream>
 #include <limits>
 
+#include "Obstacle.hpp"
+#include "ObstacleType.hpp"
 #include "ParticleNode.hpp"
 #include "ParticleType.hpp"
 #include "Pickup.hpp"
 #include "PostEffect.hpp"
 #include "Projectile.hpp"
+#include "SoundNode.hpp"
 #include "Utility.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
 	: m_target(output_target)
 	, m_camera(output_target.getDefaultView())
 	, m_textures()
 	, m_fonts(font)
+	, m_sounds(sounds)
 	, m_scenegraph()
 	, m_scene_layers()
 	, m_world_bounds(0.f, 0.f,  5000, m_camera.getSize().x)
@@ -54,6 +58,8 @@ void World::Update(sf::Time dt)
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
 	AdaptPlayerPosition();
+
+	UpdateSounds();
 }
 
 void World::Draw()
@@ -97,7 +103,7 @@ void World::LoadTextures()
 	m_textures.Load(Textures::kJungle, "Media/Textures/Jungle.png");
 	m_textures.Load(Textures::kExplosion, "Media/Textures/Explosion.png");
 	m_textures.Load(Textures::kParticle, "Media/Textures/Particle.png");
-	m_textures.Load(Textures::kFinishLine, "Media/Sprites/FinishLine2.png");
+	m_textures.Load(Textures::kFinishLine, "Media/Textures/FinishLine.png");
 }
 
 void World::BuildScene()
@@ -129,8 +135,7 @@ void World::BuildScene()
 	// Add the finish line to the scene
 	sf::Texture& finish_texture = m_textures.Get(Textures::kFinishLine);
 	std::unique_ptr<SpriteNode> finish_sprite(new SpriteNode(finish_texture));
-	finish_sprite->setPosition(500.f, 4500.f);
-	finish_sprite->setRotation(-90);
+	finish_sprite->setPosition(0.f, -76.f);
 	m_scene_layers[static_cast<int>(Layers::kBackground)]->AttachChild(std::move(finish_sprite));
 
 	// Add particle node to the scene
@@ -141,8 +146,12 @@ void World::BuildScene()
 	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(ParticleType::kPropellant, m_textures));
 	m_scene_layers[static_cast<int>(Layers::kLowerAir)]->AttachChild(std::move(propellantNode));
 
+	// Add sound effect node
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
+	m_scenegraph.AttachChild(std::move(soundNode));
+
 	//Add player's aircraft
-	std::unique_ptr<Aircraft> leader(new Aircraft(AircraftType::kEagle, m_textures, m_fonts));
+	std::unique_ptr<Aircraft> leader(new Aircraft(AircraftType::kNormal, m_textures, m_fonts));
 	m_player_aircraft = leader.get();
 	m_player_aircraft->setPosition(m_spawn_position);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(leader));
@@ -176,7 +185,7 @@ void World::AdaptPlayerVelocity()
 	//if moving diagonally then reduce velocity
 	if (velocity.x != 0.f && velocity.y != 0.f)
 	{
-		m_player_aircraft->SetVelocity((velocity / std::sqrt(2.f)));
+		m_player_aircraft->SetVelocity(velocity / std::sqrt(2.f));
 	}
 	//Add scrolling velocity
 	m_player_aircraft->Accelerate(m_scrollspeed, 0.f);
@@ -191,6 +200,8 @@ sf::FloatRect World::GetBattlefieldBounds() const
 {
 	//Return camera bounds + wider width where obtacles should spawn
 	sf::FloatRect bounds = GetViewBounds();
+	bounds.top -= 100.f;
+	bounds.height += 100.f;
 	bounds.width += 300.f;
 
 	return bounds;
@@ -252,7 +263,6 @@ void World::AddObstacles()
     AddObstacle(ObstacleType::kAcidSpill, 3500.f, 650.f);
     AddObstacle(ObstacleType::kTarSpill, 3550.f, 450.f);
     AddObstacle(ObstacleType::kBarrier, 3750.f, 550.f);
-
 
 }
 
@@ -343,6 +353,7 @@ void World::HandleCollisions()
 			//Apply the pickup effect
 			pickup.Apply(player);
 			pickup.Destroy();
+			player.PlayLocalSound(m_command_queue, SoundEffect::kCollectPickup);
 		}
 
 		else if (MatchesCategories(pair, Category::Type::kPlayerAircraft, Category::Type::kEnemyProjectile) || MatchesCategories(pair, Category::Type::kEnemyAircraft, Category::Type::kAlliedProjectile))
@@ -360,17 +371,15 @@ void World::HandleCollisions()
 			auto& obstacle = static_cast<Obstacle&>(*pair.second);
 			//Apply the projectile damage to the plane
 			aircraft.DecreaseSpeed(obstacle.GetSlowdown());
-			obstacle.Destroy();
+			//obstacle.Destroy();
 		}
-
-
 	}
 }
 
 void World::DestroyEntitiesOutsideView()
 {
 	Command command;
-	command.category = Category::Type::kEnemyAircraft | Category::Type::kProjectile | Category::Type::kObstacle;
+	command.category = Category::Type::kEnemyAircraft | Category::Type::kProjectile;
 	command.action = DerivedAction<Entity>([this](Entity& e, sf::Time)
 	{
 		//Does the object intersect with the battlefield
@@ -380,4 +389,13 @@ void World::DestroyEntitiesOutsideView()
 		}
 	});
 	m_command_queue.Push(command);
+}
+
+void World::UpdateSounds()
+{
+	// Set listener's position to player position
+	m_sounds.SetListenerPosition(m_player_aircraft->GetWorldPosition());
+
+	// Remove unused sounds
+	m_sounds.RemoveStoppedSounds();
 }

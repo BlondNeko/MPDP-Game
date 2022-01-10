@@ -12,11 +12,14 @@
 #include "DataTables.hpp"
 #include "Pickup.hpp"
 #include "PickupType.hpp"
+#include "SoundNode.hpp"
+
 
 namespace
 {
 	const std::vector<AircraftData> Table = InitializeAircraftData();
 }
+
 
 Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
@@ -29,19 +32,20 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_is_launching_missile(false)
 	, m_boost_ready(true)
 	, m_use_boost(false)
-	, m_fire_countdown(sf::Time::Zero)
-	, m_is_marked_for_removal(false)
-	, m_show_explosion(true)
-	, m_spawned_pickup(false)
-	, m_fire_rate(1)
-	, m_spread_level(1)
-	, m_missile_ammo(2)
-	, m_health_display(nullptr)
-	, m_missile_display(nullptr)
-	, m_boost_display(nullptr)
-	, m_travelled_distance(0.f)
-	, m_directions_index(0)
-	, m_counter(0)
+	, m_played_explosion_sound(false)
+, m_fire_countdown(sf::Time::Zero)
+, m_is_marked_for_removal(false)
+, m_show_explosion(true)
+, m_spawned_pickup(false)
+, m_fire_rate(1)
+, m_spread_level(1)
+, m_missile_ammo(2)
+, m_health_display(nullptr)
+, m_missile_display(nullptr)
+, m_boost_display(nullptr)
+, m_travelled_distance(0.f)
+, m_directions_index(0)
+, m_counter(0)
 {
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);
@@ -172,6 +176,15 @@ void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	{
 		CheckPickupDrop(commands);
 		m_explosion.Update(dt);
+
+		// Play explosion sound only once
+		if (!m_played_explosion_sound)
+		{
+			SoundEffect soundEffect = (Utility::RandomInt(2) == 0) ? SoundEffect::kExplosion1 : SoundEffect::kExplosion2;
+			PlayLocalSound(commands, soundEffect);
+
+			m_played_explosion_sound = true;
+		}
 		return;
 	}
 	//Check if bullets or missiles are fired
@@ -209,10 +222,11 @@ void Aircraft::UpdateMovementPattern(sf::Time dt)
 
 void Aircraft::UpdateSpeed()
 {
-	//To be cleaned up!
+	float maxSpeedBoost = (m_max_speed / 100.f);
+
 	if (m_use_boost)
 	{
-		m_speed += 2.f;
+		m_speed += maxSpeedBoost;
 		++m_counter;
 		if (m_counter > 250)
 		{
@@ -223,15 +237,15 @@ void Aircraft::UpdateSpeed()
 
 	if (m_speed < 100.f)
 	{
-		m_speed += 2.f;
+		m_speed += maxSpeedBoost;
 	}
 	else if (m_speed < m_max_speed)
 	{
-		m_speed += 0.2f;
+		m_speed += (maxSpeedBoost / 10.f);
 	}
 	else if(!m_use_boost && m_speed > m_max_speed)
 	{
-		m_speed -= 2.f;
+		m_speed -= maxSpeedBoost;
 	}
 }
 
@@ -298,8 +312,7 @@ void Aircraft::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	//Rate the bullets - default to 2 times a second
 	if(m_is_firing && m_fire_countdown <= sf::Time::Zero)
 	{
-		//Countdown expired, can fire again
-		std::cout << "Pushing fire command" << std::endl;
+		PlayLocalSound(commands, IsAllied() ? SoundEffect::kAlliedGunfire : SoundEffect::kEnemyGunfire);
 		commands.Push(m_fire_command);
 		m_fire_countdown += Table[static_cast<int>(m_type)].m_fire_interval / (m_fire_rate + 1.f);
 		m_is_firing = false;
@@ -313,6 +326,7 @@ void Aircraft::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	//Missile launch
 	if(m_is_launching_missile)
 	{
+		PlayLocalSound(commands, SoundEffect::kLaunchMissile);
 		commands.Push(m_missile_command);
 		m_is_launching_missile = false;
 	}
@@ -321,7 +335,7 @@ void Aircraft::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 
 bool Aircraft::IsAllied() const
 {
-	return m_type == AircraftType::kEagle;
+	return m_type == AircraftType::kNormal;
 }
 
 
@@ -413,3 +427,22 @@ void Aircraft::UpdateRollAnimation()
 		m_sprite.setTextureRect(textureRect);
 	}
 }
+
+void Aircraft::PlayLocalSound(CommandQueue& commands, SoundEffect effect)
+{
+	sf::Vector2f world_position = GetWorldPosition();
+
+	Command command;
+	command.category = Category::kSoundEffect;
+	command.action = DerivedAction<SoundNode>(
+		[effect, world_position](SoundNode& node, sf::Time)
+	{
+		node.PlaySound(effect, world_position);
+	});
+
+	commands.Push(command);
+}
+
+
+
+

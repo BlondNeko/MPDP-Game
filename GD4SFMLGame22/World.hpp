@@ -20,12 +20,13 @@
 #include "CommandQueue.hpp"
 #include "Obstacle.hpp"
 #include "ObstacleType.hpp"
+#include "SoundPlayer.hpp"
 
 
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
 	void Update(sf::Time dt);
 	void Draw();
 	CommandQueue& getCommandQueue();
@@ -40,9 +41,6 @@ private:
 
 	sf::FloatRect GetViewBounds() const;
 	sf::FloatRect GetBattlefieldBounds() const;
-	void SpawnEnemies();
-	void AddEnemy(AircraftType type, float relX, float relY);
-	void AddEnemies();
 
 	void SpawnObstacles();
 	void AddObstacle(ObstacleType type, float relX, float relY);
@@ -51,6 +49,7 @@ private:
 	void GuideMissiles();
 	void HandleCollisions();
 	void DestroyEntitiesOutsideView();
+	void UpdateSounds();
 
 private:
 	struct SpawnPoint
@@ -82,6 +81,7 @@ private:
 	sf::View m_camera;
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
+	SoundPlayer& m_sounds;
 	SceneNode m_scenegraph;
 	std::array<SceneNode*, static_cast<int>(Layers::kLayerCount)> m_scene_layers;
 	CommandQueue m_command_queue;

@@ -13,9 +13,10 @@ namespace Category
 		kAlliedProjectile = 1 << 5,
 		kEnemyProjectile = 1 << 6,
 		kParticleSystem = 1 << 7,
-		kObstacle = 1 << 8,
-		kPlayer1 = 1 << 9,
-		kPlayer2 = 1 << 10,
+		kSoundEffect = 1 << 8,
+		kObstacle = 1 << 9,
+		kPlayer1 = 1 << 10,
+		kPlayer2 = 1 << 11,
 
 		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
 		kProjectile = kAlliedProjectile | kEnemyProjectile,
