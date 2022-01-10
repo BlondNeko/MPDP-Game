@@ -170,7 +170,7 @@ void World::AdaptPlayerPosition()
 	//Keep the player on the screen
 	sf::FloatRect view_bounds = GetViewBounds();
 	const float border_distance = 40.f;
-	const float barrier_distance = view_bounds.top - 310.f;
+	const float barrier_distance = view_bounds.top - 325.f;
 	sf::Vector2f position = m_player_aircraft->getPosition();
 	position.x = std::max(position.x, view_bounds.left + border_distance);
 	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
