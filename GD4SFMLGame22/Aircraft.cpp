@@ -27,6 +27,7 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_boost_ready(true)
 	, m_use_boost(false)
 	, m_played_explosion_sound(false)
+	, m_is_player1(true)
 , m_is_marked_for_removal(false)
 , m_show_explosion(true)
 , m_health_display(nullptr)
@@ -49,16 +50,14 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	AttachChild(std::move(healthDisplay));
 
 	std::unique_ptr<TextNode> boostDisplay(new TextNode(fonts, ""));
+	boostDisplay->setPosition(0, -70);
 	m_boost_display = healthDisplay.get();
 	AttachChild(std::move(boostDisplay));
 
-	if (Aircraft::GetCategory() == static_cast<int>(Category::kPlayerAircraft))
-	{
-		std::unique_ptr<TextNode> missileDisplay(new TextNode(fonts, ""));
-		missileDisplay->setPosition(0, 70);
-		m_player_display = missileDisplay.get();
-		AttachChild(std::move(missileDisplay));
-	}
+	std::unique_ptr<TextNode> playerDisplay(new TextNode(fonts, ""));
+	playerDisplay->setPosition(0, 70);
+	m_player_display = playerDisplay.get();
+	AttachChild(std::move(playerDisplay));
 
 	UpdateTexts();
 
@@ -78,11 +77,11 @@ void Aircraft::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 
 unsigned int Aircraft::GetCategory() const
 {
-	if (IsAllied())
+	if (m_is_player1)
 	{
-		return static_cast<int>(Category::kPlayerAircraft);
+		return static_cast<int>(Category::kPlayer1);
 	}
-	return static_cast<int>(Category::kEnemyAircraft);
+	return static_cast<int>(Category::kPlayer2);
 }
 
 void Aircraft::CollectBoost()
@@ -96,9 +95,13 @@ void Aircraft::UpdateTexts()
 	m_health_display->setPosition(0.f, 50.f);
 	m_health_display->setRotation(-getRotation());
 
-	if(m_player_display)
+	if(m_is_player1)
 	{
 		m_player_display->SetString("Player 1");
+	}
+	else
+	{
+		m_player_display->SetString("Player 2");
 	}
 
 	if (m_boost_display)
@@ -228,7 +231,17 @@ void Aircraft::DecreaseSpeed(float speedDown)
 
 bool Aircraft::IsAllied() const
 {
-	return m_type == AircraftType::kNormal;
+	return m_type == AircraftType::kPlayer1;
+}
+
+bool Aircraft::IsPlayer1() const
+{
+	return m_is_player1;
+}
+
+void Aircraft::SetPlayer1(bool isPlayer1)
+{
+	m_is_player1 = isPlayer1;
 }
 
 sf::FloatRect Aircraft::GetBoundingRect() const

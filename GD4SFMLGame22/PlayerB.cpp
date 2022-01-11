@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "PlayerB.hpp"
 #include "Aircraft.hpp"
 #include <algorithm>
 
@@ -6,7 +6,7 @@ struct AircraftMover
 {
 	AircraftMover(float vx, float vy) : velocity(vx, vy)
 	{
-		
+
 	}
 
 	void operator()(Aircraft& aircraft, sf::Time) const
@@ -17,14 +17,15 @@ struct AircraftMover
 	sf::Vector2f velocity;
 };
 
-Player::Player() : m_current_mission_status(MissionStatus::kMissionRunning)
+PlayerB::PlayerB() : m_current_mission_status(MissionStatus::kMissionRunning)
 {
+
 	//Set initial key bindings
-	m_key_binding[sf::Keyboard::A] = PlayerAction::kMoveLeft;
-	m_key_binding[sf::Keyboard::D] = PlayerAction::kMoveRight;
-	m_key_binding[sf::Keyboard::W] = PlayerAction::kMoveUp;
-	m_key_binding[sf::Keyboard::S] = PlayerAction::kMoveDown;
-	m_key_binding[sf::Keyboard::Q] = PlayerAction::kBoost;
+	m_key_binding[sf::Keyboard::Left] = PlayerAction::kMoveLeft;
+	m_key_binding[sf::Keyboard::Right] = PlayerAction::kMoveRight;
+	m_key_binding[sf::Keyboard::Up] = PlayerAction::kMoveUp;
+	m_key_binding[sf::Keyboard::Down] = PlayerAction::kMoveDown;
+	m_key_binding[sf::Keyboard::RShift] = PlayerAction::kBoost;
 
 	//Set initial action bindings
 	InitialiseActions();
@@ -32,42 +33,42 @@ Player::Player() : m_current_mission_status(MissionStatus::kMissionRunning)
 	//Assign all categories to the player's aircraft
 	for (auto& pair : m_action_binding)
 	{
-		pair.second.category = Category::kPlayer1;
+		pair.second.category = Category::kPlayer2;
 	}
 
 }
 
 
-void Player::HandleEvent(const sf::Event& event, CommandQueue& commands)
+void PlayerB::HandleEvent(const sf::Event& event, CommandQueue& commands)
 {
-	if(event.type == sf::Event::KeyPressed)
+	if (event.type == sf::Event::KeyPressed)
 	{
 		auto found = m_key_binding.find(event.key.code);
-		if(found != m_key_binding.end() && !IsRealtimeAction(found->second))
+		if (found != m_key_binding.end() && !IsRealtimeAction(found->second))
 		{
 			commands.Push(m_action_binding[found->second]);
 		}
 	}
 }
 
-void Player::HandleRealtimeInput(CommandQueue& commands)
+void PlayerB::HandleRealtimeInput(CommandQueue& commands)
 {
 	//Check if any keybinding keys are pressed
-	for(auto pair: m_key_binding)
+	for (auto pair : m_key_binding)
 	{
-		if(sf::Keyboard::isKeyPressed(pair.first) && IsRealtimeAction(pair.second))
+		if (sf::Keyboard::isKeyPressed(pair.first) && IsRealtimeAction(pair.second))
 		{
 			commands.Push(m_action_binding[pair.second]);
 		}
 	}
 }
 
-void Player::AssignKey(PlayerAction action, sf::Keyboard::Key key)
+void PlayerB::AssignKey(PlayerAction action, sf::Keyboard::Key key)
 {
 	//Remove all keys that are already bound to action
-	for(auto itr = m_key_binding.begin(); itr != m_key_binding.end();)
+	for (auto itr = m_key_binding.begin(); itr != m_key_binding.end();)
 	{
-		if(itr->second == action)
+		if (itr->second == action)
 		{
 			m_key_binding.erase(itr++);
 		}
@@ -79,11 +80,11 @@ void Player::AssignKey(PlayerAction action, sf::Keyboard::Key key)
 	m_key_binding[key] = action;
 }
 
-sf::Keyboard::Key Player::GetAssignedKey(PlayerAction action) const
+sf::Keyboard::Key PlayerB::GetAssignedKey(PlayerAction action) const
 {
-	for(auto pair : m_key_binding)
+	for (auto pair : m_key_binding)
 	{
-		if(pair.second == action)
+		if (pair.second == action)
 		{
 			return pair.first;
 		}
@@ -91,17 +92,17 @@ sf::Keyboard::Key Player::GetAssignedKey(PlayerAction action) const
 	return sf::Keyboard::Unknown;
 }
 
-void Player::SetMissionStatus(MissionStatus status)
+void PlayerB::SetMissionStatus(MissionStatus status)
 {
 	m_current_mission_status = status;
 }
 
-MissionStatus Player::GetMissionStatus() const
+MissionStatus PlayerB::GetMissionStatus() const
 {
 	return m_current_mission_status;
 }
 
-void Player::InitialiseActions()
+void PlayerB::InitialiseActions()
 {
 	const float player_speed = 200.f;
 
@@ -119,9 +120,9 @@ void Player::InitialiseActions()
 
 }
 
-bool Player::IsRealtimeAction(PlayerAction action)
+bool PlayerB::IsRealtimeAction(PlayerAction action)
 {
-	switch(action)
+	switch (action)
 	{
 	case PlayerAction::kMoveLeft:
 	case PlayerAction::kMoveRight:

@@ -2,6 +2,7 @@
 #include "State.hpp"
 #include "World.hpp"
 #include "Player.hpp"
+#include "PlayerB.hpp"
 
 class GameState : public State
 {
@@ -13,6 +14,7 @@ public:
 
 private:
 	World m_world;
-	Player& m_player;
+	Player& m_player1;
+	PlayerB& m_player2;
 };
 

@@ -16,7 +16,7 @@ GameOverState::GameOverState(StateStack& stack, Context context)
 	sf::Vector2f windowSize(context.window->getSize());
 
 	m_game_over_text.setFont(font);
-	if (context.player->GetMissionStatus() == MissionStatus::kMissionFailure)
+	if (context.player1->GetMissionStatus() == MissionStatus::kMissionFailure)
 	{
 		m_game_over_text.setString("Mission failed!");
 	}

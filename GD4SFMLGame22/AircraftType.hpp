@@ -1,8 +1,8 @@
 #pragma once
 enum class AircraftType
 {
-	kNormal,
-	KNitro,
+	kPlayer1,
+	kPlayer2,
 	kOffroader,
 	kRacer,
 	kSpecialA,

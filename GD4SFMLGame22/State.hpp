@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "MusicPlayer.hpp"
+#include "PlayerB.hpp"
 #include "SoundPlayer.hpp"
 
 namespace sf
@@ -25,11 +26,12 @@ public:
 
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sounds);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player1, PlayerB& player2, MusicPlayer& music, SoundPlayer& sounds);
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
-		Player* player;
+		Player* player1;
+		PlayerB* player2;
 		MusicPlayer* music;
 		SoundPlayer* sounds;
 	};

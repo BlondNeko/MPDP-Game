@@ -1,12 +1,15 @@
 #include "State.hpp"
 
+#include "Player.hpp"
+#include "PlayerB.hpp"
 #include "StateStack.hpp"
 
-State::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sounds)
+State::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player1, PlayerB& player2, MusicPlayer& music, SoundPlayer& sounds)
 : window(&window)
 , textures(&textures)
 , fonts(&fonts)
-, player(&player)
+, player1(&player1)
+, player2(&player2)
 , music(&music)
 , sounds(&sounds)
 {

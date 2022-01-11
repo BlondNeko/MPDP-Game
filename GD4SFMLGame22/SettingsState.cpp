@@ -5,7 +5,6 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-
 SettingsState::SettingsState(StateStack& stack, Context context)
 	: State(stack, context)
 	, m_gui_container()
@@ -17,7 +16,7 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 	AddButtonLabel(PlayerAction::kMoveRight, 350.f, "Move Right", context);
 	AddButtonLabel(PlayerAction::kMoveUp, 400.f, "Move Up", context);
 	AddButtonLabel(PlayerAction::kMoveDown, 450.f, "Move Down", context);
-	AddButtonLabel(PlayerAction::kFire, 500.f, "Fire", context);
+	AddButtonLabel(PlayerAction::kBoost, 500.f, "Use Boost", context);
 	AddButtonLabel(PlayerAction::kLaunchMissile, 550.f, "Missile", context);
 
 	UpdateLabels();
@@ -55,7 +54,7 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 			isKeyBinding = true;
 			if (event.type == sf::Event::KeyReleased)
 			{
-				GetContext().player->AssignKey(static_cast<PlayerAction>(action), event.key.code);
+				GetContext().player1->AssignKey(static_cast<PlayerAction>(action), event.key.code);
 				m_binding_buttons[action]->Deactivate();
 			}
 			break;
@@ -73,13 +72,14 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 
 void SettingsState::UpdateLabels()
 {
-	Player& player = *GetContext().player;
+	Player& player = *GetContext().player1;
 
 	for (std::size_t i = 0; i < static_cast<int>(PlayerAction::kActionCount); ++i)
 	{
 		sf::Keyboard::Key key = player.GetAssignedKey(static_cast<PlayerAction>(i));
 		m_binding_labels[i]->SetText(Utility::toString(key));
 	}
+
 }
 
 void SettingsState::AddButtonLabel(PlayerAction action, float y, const std::string& text, Context context)

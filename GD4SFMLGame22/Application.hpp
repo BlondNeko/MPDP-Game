@@ -5,6 +5,7 @@
 
 #include "MusicPlayer.hpp"
 #include "Player.hpp"
+#include "PlayerB.hpp"
 #include "ResourceHolder.hpp"
 #include "ResourceIdentifiers.hpp"
 #include "StateStack.hpp"
@@ -24,7 +25,8 @@ private:
 
 private:
 	sf::RenderWindow m_window;
-	Player m_player;
+	Player m_player1;
+	PlayerB m_player2;
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;

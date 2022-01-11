@@ -26,6 +26,8 @@ public:
 	void IncreaseSpeed(float speed);
 	void DecreaseSpeed(float speed);
 	float GetSpeed();
+	bool IsPlayer1() const;
+	void SetPlayer1(bool isPlayer1);
 
 	sf::FloatRect GetBoundingRect() const override;
 	bool IsMarkedForRemoval() const override;
@@ -54,6 +56,7 @@ private:
 	bool m_is_marked_for_removal;
 	bool m_show_explosion;
 	bool m_played_explosion_sound;
+	bool m_is_player1;
 
 	float m_max_speed;
 	TextNode* m_health_display;

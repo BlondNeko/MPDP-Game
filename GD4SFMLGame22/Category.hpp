@@ -18,7 +18,7 @@ namespace Category
 		kPlayer1 = 1 << 10,
 		kPlayer2 = 1 << 11,
 
-		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft,
+		kAircraft = kPlayerAircraft | kAlliedAircraft | kEnemyAircraft | kPlayer1 | kPlayer2,
 		kProjectile = kAlliedProjectile | kEnemyProjectile,
 	};
 }
