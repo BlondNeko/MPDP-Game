@@ -41,21 +41,31 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	m_explosion.SetNumFrames(16);
 	m_explosion.SetDuration(sf::seconds(1));
 
-
 	Utility::CentreOrigin(m_sprite);
 	Utility::CentreOrigin(m_explosion);
 	
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
+	healthDisplay->setPosition(0, 25);
 	m_health_display = healthDisplay.get();
 	AttachChild(std::move(healthDisplay));
 
 	std::unique_ptr<TextNode> boostDisplay(new TextNode(fonts, ""));
-	boostDisplay->setPosition(0, -70);
-	m_boost_display = healthDisplay.get();
+	boostDisplay->setPosition(0, -20);
+	m_boost_display = boostDisplay.get();
 	AttachChild(std::move(boostDisplay));
 
 	std::unique_ptr<TextNode> playerDisplay(new TextNode(fonts, ""));
-	playerDisplay->setPosition(0, 70);
+
+	if (m_is_player1)
+	{
+		playerDisplay->SetString("Player 1");
+	}
+	else
+	{
+		playerDisplay->SetString("Player 2");
+	}
+
+	playerDisplay->setPosition(0, 25);
 	m_player_display = playerDisplay.get();
 	AttachChild(std::move(playerDisplay));
 
@@ -94,15 +104,6 @@ void Aircraft::UpdateTexts()
 	m_health_display->SetString(std::to_string(GetHitPoints()) + "HP");
 	m_health_display->setPosition(0.f, 50.f);
 	m_health_display->setRotation(-getRotation());
-
-	if(m_is_player1)
-	{
-		m_player_display->SetString("Player 1");
-	}
-	else
-	{
-		m_player_display->SetString("Player 2");
-	}
 
 	if (m_boost_display)
 	{

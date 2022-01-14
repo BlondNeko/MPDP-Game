@@ -23,7 +23,8 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_scenegraph()
 	, m_scene_layers()
 	, m_world_bounds(0.f, 0.f,  5000, m_camera.getSize().x)
-	, m_spawn_position(200.f, 450.f)//m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f + 50.f
+	, m_spawn_position_1(200.f, 450.f)//m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f + 50.f
+	, m_spawn_position_2(200.f, 650.f)
 	, m_scrollspeed(-50.f)
 	, m_player1_aircraft(nullptr)
 	, m_player2_aircraft(nullptr)
@@ -56,8 +57,8 @@ void World::Update(sf::Time dt)
 	//Remove all destroyed entities
 	m_scenegraph.RemoveWrecks();
 
-	//SpawnObstacles();
-	//SpawnPickups();
+	SpawnObstacles();
+	SpawnPickups();
 
 	//Apply movement
 	m_scenegraph.Update(dt, m_command_queue);
@@ -91,7 +92,17 @@ bool World::HasAlivePlayer() const
 
 bool World::HasPlayerReachedEnd() const
 {
-	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) || !m_world_bounds.contains(m_player2_aircraft->getPosition());
+	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) && !m_world_bounds.contains(m_player2_aircraft->getPosition());
+}
+
+bool World::HasPlayer1ReachedEnd() const
+{
+	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) && m_world_bounds.contains(m_player2_aircraft->getPosition());
+}
+
+bool World::HasPlayer2ReachedEnd() const
+{
+	return m_world_bounds.contains(m_player2_aircraft->getPosition()) && !m_world_bounds.contains(m_player2_aircraft->getPosition());
 }
 
 void World::LoadTextures()
@@ -157,18 +168,17 @@ void World::BuildScene()
 	//Add player 1's aircraft
 	std::unique_ptr<Aircraft> player1(new Aircraft(AircraftType::kPlayer1, m_textures, m_fonts));
 	m_player1_aircraft = player1.get();
-	m_player1_aircraft->setPosition(m_spawn_position);
+	m_player1_aircraft->setPosition(m_spawn_position_1);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(player1));
 
 	//Add player 2's aircraft
 	std::unique_ptr<Aircraft> player2(new Aircraft(AircraftType::kPlayer2, m_textures, m_fonts));
 	m_player2_aircraft = player2.get();
-	sf::Vector2f spawn2 = sf::Vector2f(200.f, 550.f);
-	m_player2_aircraft->setPosition(spawn2);
+	m_player2_aircraft->setPosition(m_spawn_position_2);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(player2));
 
-	//AddObstacles();
-	//AddPickups();
+	AddObstacles();
+	AddPickups();
 }
 
 CommandQueue& World::getCommandQueue()
@@ -259,38 +269,34 @@ void World::AddObstacles()
 	//Add obstacles
 	//450.f, 550.f, 650.f ( range of the road)
 	AddObstacle(ObstacleType::kBarrier, 200.f, 450.f);
-	AddObstacle(ObstacleType::kBarrier, 250.f, 650.f);
+
 	AddObstacle(ObstacleType::kTarSpill, 500.f, 450.f);
-	AddObstacle(ObstacleType::kBarrier, 550.f, 650.f);
-	AddObstacle(ObstacleType::kBarrier, 650.f, 550.f);
+
 	AddObstacle(ObstacleType::kTarSpill, 800.f, 650.f);
 	AddObstacle(ObstacleType::kAcidSpill, 850.f, 450.f);
 	AddObstacle(ObstacleType::kBarrier, 900.f, 550.f);
-	AddObstacle(ObstacleType::kTarSpill, 1000.f, 650.f);
-	AddObstacle(ObstacleType::kBarrier, 1100.f, 450.f);
-	AddObstacle(ObstacleType::kAcidSpill, 1150.f, 650.f);
-	AddObstacle(ObstacleType::kTarSpill, 1400.f, 450.f);
+
 	AddObstacle(ObstacleType::kBarrier, 1450.f, 650.f);
-	AddObstacle(ObstacleType::kBarrier, 1750.f, 550.f);
-	AddObstacle(ObstacleType::kAcidSpill, 1750.f, 450.f);
 	AddObstacle(ObstacleType::kBarrier, 1950.f, 550.f);
 	AddObstacle(ObstacleType::kBarrier, 2000.f, 550.f);
 	
 	AddObstacle(ObstacleType::kAcidSpill, 2250.f, 550.f);
 	AddObstacle(ObstacleType::kTarSpill, 2250.f, 450.f);
-	AddObstacle(ObstacleType::kBarrier, 2300.f, 650.f);
-	AddObstacle(ObstacleType::kBarrier, 2400.f, 550.f);
-	AddObstacle(ObstacleType::kTarSpill, 2450.f, 650.f);
-	AddObstacle(ObstacleType::kAcidSpill, 2750.f, 450.f);
+
     AddObstacle(ObstacleType::kTarSpill, 2850.f, 450.f);
-    AddObstacle(ObstacleType::kAcidSpill, 3000.f, 450.f);
     AddObstacle(ObstacleType::kAcidSpill, 3050.f, 450.f);
-    AddObstacle(ObstacleType::kBarrier, 3200.f, 650.f);
-    AddObstacle(ObstacleType::kTarSpill, 3350.f, 650.f);
-    AddObstacle(ObstacleType::kBarrier, 3400.f, 450.f);
-    AddObstacle(ObstacleType::kAcidSpill, 3500.f, 650.f);
     AddObstacle(ObstacleType::kTarSpill, 3550.f, 450.f);
     AddObstacle(ObstacleType::kBarrier, 3750.f, 550.f);
+
+	AddObstacle(ObstacleType::kAcidSpill, 3750.f, 450.f);
+	AddObstacle(ObstacleType::kTarSpill, 4000.f, 450.f);
+
+	AddObstacle(ObstacleType::kBarrier, 4000.f, 500.f);
+	AddObstacle(ObstacleType::kAcidSpill, 4250.f, 650.f);
+	AddObstacle(ObstacleType::kTarSpill, 4250.f, 450.f);
+
+	AddObstacle(ObstacleType::kTarSpill, 4550.f, 500.f);
+	AddObstacle(ObstacleType::kAcidSpill, 4850.f, 550.f);
 
 }
 
@@ -318,12 +324,9 @@ void World::AddPickups()
 	//Add obstacles
 	//450.f, 550.f, 650.f ( range of the road)
 	AddPickup(PickupType::kBoost, 500.f, 500.f);
-	AddPickup(PickupType::kBoost, 1000.f, 650.f);
 	AddPickup(PickupType::kBoost, 1500.f, 600.f);
-	AddPickup(PickupType::kBoost, 2250.f, 450.f);
 	AddPickup(PickupType::kBoost, 3000.f, 500.f);
 	AddPickup(PickupType::kBoost, 3500.f, 600.f);
-
 }
 
 bool MatchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)

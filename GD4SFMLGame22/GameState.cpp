@@ -31,10 +31,23 @@ bool GameState::Update(sf::Time dt)
 	}
 	else if (m_world.HasPlayerReachedEnd())
 	{
-		m_player1.SetMissionStatus(MissionStatus::kMissionSuccess);
-		m_player2.SetMissionStatus(MissionStatus::kMissionSuccess);
-		RequestStackPush(StateID::kGameOver);
+		if (!m_world.HasPlayer1ReachedEnd())
+		{
+			m_player1.SetMissionStatus(MissionStatus::kPlayer1Win);
+			RequestStackPush(StateID::kGameOver);
+		}
+		else if (m_world.HasPlayer2ReachedEnd())
+		{
+			m_player2.SetMissionStatus(MissionStatus::kPlayer2Win);
+			RequestStackPush(StateID::kGameOver);
+		}
+		else
+		{
+			m_player1.SetMissionStatus(MissionStatus::kMissionFailure);
+			RequestStackPush(StateID::kGameOver);
+		}
 	}
+
 	CommandQueue& commands = m_world.getCommandQueue();
 	m_player1.HandleRealtimeInput(commands);
 	m_player2.HandleRealtimeInput(commands);

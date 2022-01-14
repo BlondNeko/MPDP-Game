@@ -19,7 +19,6 @@ struct AircraftMover
 
 PlayerB::PlayerB() : m_current_mission_status(MissionStatus::kMissionRunning)
 {
-
 	//Set initial key bindings
 	m_key_binding[sf::Keyboard::Left] = PlayerAction::kMoveLeft;
 	m_key_binding[sf::Keyboard::Right] = PlayerAction::kMoveRight;

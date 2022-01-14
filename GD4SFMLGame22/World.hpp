@@ -33,6 +33,8 @@ public:
 	CommandQueue& getCommandQueue();
 	bool HasAlivePlayer() const;
 	bool HasPlayerReachedEnd() const;
+	bool HasPlayer1ReachedEnd() const;
+	bool HasPlayer2ReachedEnd() const;
 
 private:
 	void LoadTextures();
@@ -92,15 +94,14 @@ private:
 	CommandQueue m_command_queue;
 
 	sf::FloatRect m_world_bounds;
-	sf::Vector2f m_spawn_position;
+	sf::Vector2f m_spawn_position_1;
+	sf::Vector2f m_spawn_position_2;
 	float m_scrollspeed;
 	Aircraft* m_player1_aircraft;
 	Aircraft* m_player2_aircraft;
-	//std::vector<Aircraft*>	m_active_enemies;
 
 	std::vector<ObstacleSpawnPoint> m_obstacle_spawn_points;
 	std::vector<PickupSpawnPoint> m_pickup_spawn_points;
-	//std::vector<Obstacle*>	m_active_obstacles;
 
 	BloomEffect m_bloom_effect;
 };
