@@ -11,6 +11,11 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 {
 	m_background_sprite.setTexture(context.textures->Get(Textures::kTitleScreen));
 
+	//sf::Text title;
+
+	//title.setString("Controls");
+	//title.setPosition(80.f, 300.f);
+
 	// Build key binding buttons and labels
 	//AddButtonLabel(PlayerAction::kMoveLeft, 300.f, "Move Left", context);
 	//AddButtonLabel(PlayerAction::kMoveRight, 350.f, "Move Right", context);

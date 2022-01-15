@@ -174,6 +174,7 @@ void Aircraft::UpdateSpeed()
 
 	if (m_use_boost)
 	{
+		PlayRollAnimation();
 		m_speed += maxSpeedBoost;
 		++m_counter;
 		if (m_counter > 250)
@@ -259,6 +260,23 @@ void Aircraft::Remove()
 {
 	Entity::Remove();
 	m_show_explosion = false;
+}
+
+void Aircraft::PlayRollAnimation()
+{
+	if (Table[static_cast<int>(m_type)].m_has_roll_animation)
+	{
+		sf::IntRect textureRect = Table[static_cast<int>(m_type)].m_texture_rect;
+
+		if (GetVelocity().x >= 100.f)
+			textureRect.left = textureRect.width;
+
+		// Roll right: Texture rect offset twice
+		else if (GetVelocity().x <= 90.f)
+			textureRect.left += textureRect.width;
+
+		m_sprite.setTextureRect(textureRect);
+	}
 }
 
 void Aircraft::UpdateRollAnimation()
