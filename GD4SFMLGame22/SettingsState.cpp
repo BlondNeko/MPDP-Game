@@ -11,15 +11,20 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 {
 	m_background_sprite.setTexture(context.textures->Get(Textures::kTitleScreen));
 
-	// Build key binding buttons and labels
-	AddButtonLabel(PlayerAction::kMoveLeft, 300.f, "Move Left", context);
-	AddButtonLabel(PlayerAction::kMoveRight, 350.f, "Move Right", context);
-	AddButtonLabel(PlayerAction::kMoveUp, 400.f, "Move Up", context);
-	AddButtonLabel(PlayerAction::kMoveDown, 450.f, "Move Down", context);
-	AddButtonLabel(PlayerAction::kBoost, 500.f, "Use Boost", context);
-	AddButtonLabel(PlayerAction::kLaunchMissile, 550.f, "Missile", context);
+	//sf::Text title;
 
-	UpdateLabels();
+	//title.setString("Controls");
+	//title.setPosition(80.f, 300.f);
+
+	// Build key binding buttons and labels
+	//AddButtonLabel(PlayerAction::kMoveLeft, 300.f, "Move Left", context);
+	//AddButtonLabel(PlayerAction::kMoveRight, 350.f, "Move Right", context);
+	//AddButtonLabel(PlayerAction::kMoveUp, 400.f, "Move Up", context);
+	//AddButtonLabel(PlayerAction::kMoveDown, 450.f, "Move Down", context);
+	//AddButtonLabel(PlayerAction::kBoost, 500.f, "Use Boost", context);
+	//AddButtonLabel(PlayerAction::kLaunchMissile, 550.f, "Missile", context);
+
+	//UpdateLabels();
 
 	auto back_button = std::make_shared<GUI::Button>(context);
 	back_button->setPosition(80.f, 620.f);
@@ -44,10 +49,10 @@ bool SettingsState::Update(sf::Time)
 
 bool SettingsState::HandleEvent(const sf::Event& event)
 {
-	bool isKeyBinding = false;
+	//bool isKeyBinding = false;
 
 	// Iterate through all key binding buttons to see if they are being pressed, waiting for the user to enter a key
-	for (std::size_t action = 0; action < static_cast<int>(PlayerAction::kActionCount); ++action)
+	/*for (std::size_t action = 0; action < static_cast<int>(PlayerAction::kActionCount); ++action)
 	{
 		if (m_binding_buttons[action]->IsActive())
 		{
@@ -59,12 +64,12 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 			}
 			break;
 		}
-	}
+	}*/
 
 	// If pressed button changed key bindings, update labels; otherwise consider other buttons in container
-	if (isKeyBinding)
-		UpdateLabels();
-	else
+	//if (isKeyBinding)
+		//UpdateLabels();
+	//else
 		m_gui_container.HandleEvent(event);
 
 	return false;
@@ -79,7 +84,6 @@ void SettingsState::UpdateLabels()
 		sf::Keyboard::Key key = player.GetAssignedKey(static_cast<PlayerAction>(i));
 		m_binding_labels[i]->SetText(Utility::toString(key));
 	}
-
 }
 
 void SettingsState::AddButtonLabel(PlayerAction action, float y, const std::string& text, Context context)
@@ -95,5 +99,3 @@ void SettingsState::AddButtonLabel(PlayerAction action, float y, const std::stri
 	m_gui_container.Pack(m_binding_buttons[static_cast<int>(action)]);
 	m_gui_container.Pack(m_binding_labels[static_cast<int>(action)]);
 }
-
-

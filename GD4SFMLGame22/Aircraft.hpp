@@ -40,6 +40,7 @@ private:
 	void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 
 	bool IsAllied() const;
+	void PlayRollAnimation();
 	void UpdateRollAnimation();
 	void UpdateSpeed();
 

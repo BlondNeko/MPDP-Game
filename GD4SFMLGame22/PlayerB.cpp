@@ -115,6 +115,7 @@ void PlayerB::InitialiseActions()
 		)
 	{
 		a.UseBoost();
+		
 	});
 
 }

@@ -19,5 +19,6 @@ private:
 	sf::Sprite			m_background_sprite;
 	sf::Text			m_paused_text;
 	sf::Text			m_instruction_text;
+	sf::Text			m_controls_text;
 };
 

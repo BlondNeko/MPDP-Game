@@ -13,6 +13,7 @@ PauseState::PauseState(StateStack& stack, Context context)
 	, m_background_sprite()
 	, m_paused_text()
 	, m_instruction_text()
+	, m_controls_text()
 {
 	sf::Font& font = context.fonts->Get(Fonts::Main);
 	sf::Vector2f viewSize = context.window->getView().getSize();
@@ -28,6 +29,12 @@ PauseState::PauseState(StateStack& stack, Context context)
 	Utility::CentreOrigin(m_instruction_text);
 	m_instruction_text.setPosition(0.5f * viewSize.x, 0.6f * viewSize.y);
 
+	m_controls_text.setFont(font);
+	m_controls_text.setString("        - Controls -\nPlayer 1         :         Player 2\n[ W ]   -   Up   -       [ Up-Arrow ] \n[ S ]   -   Down   -   [ Down-Arrow ] \n[ A ]   -   Left   -      [ L-Arrow ] \n[ D ]   -   Right   -    [ R-ARROW ] \n[ Q ]   -   Boost  -   [ R-Shift ]");
+	m_controls_text.setCharacterSize(20);
+	Utility::CentreOrigin((m_controls_text));
+	m_controls_text.setPosition(0.5f * viewSize.x, 0.8f * viewSize.y);
+	
 	context.music->SetPaused(true);
 }
 
@@ -48,6 +55,7 @@ void PauseState::Draw()
 	window.draw(backgroundShape);
 	window.draw(m_paused_text);
 	window.draw(m_instruction_text);
+	window.draw(m_controls_text);
 }
 
 bool PauseState::Update(sf::Time)
