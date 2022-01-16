@@ -23,7 +23,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_scenegraph()
 	, m_scene_layers()
 	, m_world_bounds(0.f, 0.f,  5000, m_camera.getSize().x)
-	, m_spawn_position_1(200.f, 450.f)//m_camera.getSize().x/2.f, m_world_bounds.height - m_camera.getSize().y /2.f + 50.f
+	, m_spawn_position_1(200.f, 450.f)
 	, m_spawn_position_2(200.f, 650.f)
 	, m_scrollspeed(-50.f)
 	, m_player1_aircraft(nullptr)
@@ -42,8 +42,6 @@ void World::Update(sf::Time dt)
 
 	m_player1_aircraft->SetVelocity(0.f, 0.f);
 	m_player2_aircraft->SetVelocity(0.f, 0.f);
-	m_player1_aircraft->SetPlayer1(true);
-	m_player2_aircraft->SetPlayer1(false);
 	DestroyEntitiesOutsideView();
 
 	//Forward commands to the scenegraph until the command queue is empty
@@ -92,17 +90,17 @@ bool World::HasAlivePlayer() const
 
 bool World::HasPlayerReachedEnd() const
 {
-	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) && !m_world_bounds.contains(m_player2_aircraft->getPosition());
+	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) || !m_world_bounds.contains(m_player2_aircraft->getPosition());
 }
 
 bool World::HasPlayer1ReachedEnd() const
 {
-	return !m_world_bounds.contains(m_player1_aircraft->getPosition()) && m_world_bounds.contains(m_player2_aircraft->getPosition());
+	return !m_world_bounds.contains(m_player1_aircraft->getPosition());
 }
 
 bool World::HasPlayer2ReachedEnd() const
 {
-	return m_world_bounds.contains(m_player2_aircraft->getPosition()) && !m_world_bounds.contains(m_player2_aircraft->getPosition());
+	return !m_world_bounds.contains(m_player2_aircraft->getPosition());
 }
 
 void World::LoadTextures()
@@ -166,13 +164,13 @@ void World::BuildScene()
 	m_scenegraph.AttachChild(std::move(soundNode));
 
 	//Add player 1's aircraft
-	std::unique_ptr<Aircraft> player1(new Aircraft(AircraftType::kPlayer1, m_textures, m_fonts));
+	std::unique_ptr<Aircraft> player1(new Aircraft(AircraftType::kPlayer1, m_textures, m_fonts, true));
 	m_player1_aircraft = player1.get();
 	m_player1_aircraft->setPosition(m_spawn_position_1);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(player1));
 
 	//Add player 2's aircraft
-	std::unique_ptr<Aircraft> player2(new Aircraft(AircraftType::kPlayer2, m_textures, m_fonts));
+	std::unique_ptr<Aircraft> player2(new Aircraft(AircraftType::kPlayer2, m_textures, m_fonts, false));
 	m_player2_aircraft = player2.get();
 	m_player2_aircraft->setPosition(m_spawn_position_2);
 	m_scene_layers[static_cast<int>(Layers::kUpperAir)]->AttachChild(std::move(player2));
@@ -297,7 +295,6 @@ void World::AddObstacles()
 
 	AddObstacle(ObstacleType::kTarSpill, 4550.f, 500.f);
 	AddObstacle(ObstacleType::kAcidSpill, 4850.f, 550.f);
-
 }
 
 void World::SpawnPickups()
@@ -380,10 +377,11 @@ void World::HandleCollisions()
 
 		else if (MatchesCategories(pair, Category::Type::kPlayer1, Category::Type::kObstacle) || MatchesCategories(pair, Category::Type::kPlayer2, Category::Type::kObstacle))
 		{
-			auto& aircraft = static_cast<Aircraft&>(*pair.first);
+			auto& bike = static_cast<Aircraft&>(*pair.first);
 			auto& obstacle = static_cast<Obstacle&>(*pair.second);
-			//Apply the projectile damage to the plane
-			aircraft.DecreaseSpeed(obstacle.GetSlowdown());
+
+			//Apply the slowdown to the plane
+			bike.DecreaseSpeed(obstacle.GetSlowdown());
 			obstacle.Destroy();
 		}
 	}

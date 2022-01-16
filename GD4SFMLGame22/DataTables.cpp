@@ -45,6 +45,7 @@ std::vector<AircraftData> InitializeAircraftData()
 	data[static_cast<int>(AircraftType::kRacer)].m_texture_rect = sf::IntRect(58, 90, 57, 29);
 	data[static_cast<int>(AircraftType::kRacer)].m_offroad_resistance = 0.2f;
 
+	/*
 	data[static_cast<int>(AircraftType::kSpecialA)].m_hitpoints = 80;
 	data[static_cast<int>(AircraftType::kSpecialA)].m_speed = 180.f;
 	data[static_cast<int>(AircraftType::kSpecialA)].m_max_speed = 275.f;
@@ -75,67 +76,10 @@ std::vector<AircraftData> InitializeAircraftData()
 	data[static_cast<int>(AircraftType::kSpecialD)].m_fire_interval = sf::seconds(2);
 	data[static_cast<int>(AircraftType::kSpecialD)].m_texture = Textures::kSpriteSheet;
 	data[static_cast<int>(AircraftType::kSpecialD)].m_texture_rect = sf::IntRect(60, 213, 59, 32);
-	data[static_cast<int>(AircraftType::kSpecialD)].m_offroad_resistance = 0.5f;
+	data[static_cast<int>(AircraftType::kSpecialD)].m_offroad_resistance = 0.5f;*/
 
 	return data;
 }
-
-/*
-std::vector<BikeData> InitializeBikeData()
-{
-	std::vector<BikeData> data(static_cast<int>(BikeType::kBikeCount));
-
-	data[static_cast<int>(BikeType::kPlayer1)].m_hitpoints = 100;
-	data[static_cast<int>(BikeType::kPlayer1)].m_speed = 200.f;
-	data[static_cast<int>(BikeType::kPlayer1)].m_offroad_resistance = 0.2f;
-	data[static_cast<int>(BikeType::kPlayer1)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kPlayer1)].m_texture_rect = sf::IntRect(0, 0, 57, 29);
-
-	data[static_cast<int>(BikeType::kNitro)].m_hitpoints = 80;
-	data[static_cast<int>(BikeType::kNitro)].m_speed = 220.f;
-	data[static_cast<int>(BikeType::kNitro)].m_offroad_resistance = 0.1f;
-	data[static_cast<int>(BikeType::kNitro)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kNitro)].m_texture_rect = sf::IntRect(0, 30, 57, 29);
-
-	data[static_cast<int>(BikeType::kOffroader)].m_hitpoints = 120;
-	data[static_cast<int>(BikeType::kOffroader)].m_speed = 175.f;
-	data[static_cast<int>(BikeType::kOffroader)].m_offroad_resistance = 0.3f;
-	data[static_cast<int>(BikeType::kOffroader)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kOffroader)].m_texture_rect = sf::IntRect(0, 60, 57, 29);
-
-	data[static_cast<int>(BikeType::kRacer)].m_hitpoints = 110;
-	data[static_cast<int>(BikeType::kRacer)].m_speed = 210.f;
-	data[static_cast<int>(BikeType::kRacer)].m_offroad_resistance = 0.2f;
-	data[static_cast<int>(BikeType::kRacer)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kRacer)].m_texture_rect = sf::IntRect(0, 90, 57, 29);
-
-	data[static_cast<int>(BikeType::kSpecialA)].m_hitpoints = 60;
-	data[static_cast<int>(BikeType::kSpecialA)].m_speed = 300.f;
-	data[static_cast<int>(BikeType::kSpecialA)].m_offroad_resistance = 0.3f;
-	data[static_cast<int>(BikeType::kSpecialA)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kSpecialA)].m_texture_rect = sf::IntRect(0, 120, 26, 33);
-
-	data[static_cast<int>(BikeType::kSpecialB)].m_hitpoints = 40;
-	data[static_cast<int>(BikeType::kSpecialB)].m_speed = 350.f;
-	data[static_cast<int>(BikeType::kSpecialB)].m_offroad_resistance = 0.25f;
-	data[static_cast<int>(BikeType::kSpecialB)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kSpecialB)].m_texture_rect = sf::IntRect(0, 154, 25, 25);
-
-	data[static_cast<int>(BikeType::kSpecialC)].m_hitpoints = 150;
-	data[static_cast<int>(BikeType::kSpecialC)].m_speed = 160.f;
-	data[static_cast<int>(BikeType::kSpecialC)].m_offroad_resistance = 0.5f;
-	data[static_cast<int>(BikeType::kSpecialC)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kSpecialC)].m_texture_rect = sf::IntRect(0, 0, 59, 32);
-
-	data[static_cast<int>(BikeType::kSpecialD)].m_hitpoints = 150;
-	data[static_cast<int>(BikeType::kSpecialD)].m_speed = 160.f;
-	data[static_cast<int>(BikeType::kSpecialD)].m_offroad_resistance = 0.5f;
-	data[static_cast<int>(BikeType::kSpecialD)].m_texture = Textures::kSpriteSheet;
-	data[static_cast<int>(BikeType::kSpecialD)].m_texture_rect = sf::IntRect(0, 213, 59, 32);
-
-	return data;
-}
-*/
 
 std::vector<ProjectileData> InitializeProjectileData()
 {
@@ -181,26 +125,14 @@ std::vector<PickupData> InitializePickupData()
 {
 	std::vector<PickupData> data(static_cast<int>(PickupType::kPickupCount));
 
-	data[static_cast<int>(PickupType::kHealthRefill)].m_texture = Textures::kEntities;
-	data[static_cast<int>(PickupType::kHealthRefill)].m_texture_rect = sf::IntRect(0, 64, 40, 40);
+	data[static_cast<int>(PickupType::kHealthRefill)].m_texture = Textures::kSpriteSheet;
+	data[static_cast<int>(PickupType::kHealthRefill)].m_texture_rect = sf::IntRect(150, 171, 29, 28);
 	data[static_cast<int>(PickupType::kHealthRefill)].m_action = [](Aircraft& a) {a.Repair(25); };
 
 	data[static_cast<int>(PickupType::kBoost)].m_texture = Textures::kSpriteSheet;
 	data[static_cast<int>(PickupType::kBoost)].m_texture_rect = sf::IntRect(171, 122, 29, 28);
 	data[static_cast<int>(PickupType::kBoost)].m_action = [](Aircraft& a) {a.CollectBoost(); };
-	//Other pickup: top:150, left:171
 
-	data[static_cast<int>(PickupType::kMissileRefill)].m_texture = Textures::kEntities;
-	data[static_cast<int>(PickupType::kMissileRefill)].m_texture_rect = sf::IntRect(40, 64, 40, 40);
-	//data[static_cast<int>(PickupType::kMissileRefill)].m_action = std::bind(&Aircraft::CollectMissiles, std::placeholders::_1, 3);
-
-	data[static_cast<int>(PickupType::kFireSpread)].m_texture = Textures::kEntities;
-	data[static_cast<int>(PickupType::kFireSpread)].m_texture_rect = sf::IntRect(80, 64, 40, 40);
-	//data[static_cast<int>(PickupType::kFireSpread)].m_action = std::bind(&Aircraft::IncreaseSpread, std::placeholders::_1);
-
-	data[static_cast<int>(PickupType::kFireRate)].m_texture = Textures::kEntities;
-	data[static_cast<int>(PickupType::kFireRate)].m_texture_rect = sf::IntRect(120, 64, 40, 40);
-	//data[static_cast<int>(PickupType::kFireRate)].m_action = std::bind(&Aircraft::IncreaseFireRate, std::placeholders::_1);
 	return data;
 }
 

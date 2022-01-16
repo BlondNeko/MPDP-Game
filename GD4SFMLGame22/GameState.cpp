@@ -31,7 +31,7 @@ bool GameState::Update(sf::Time dt)
 	}
 	else if (m_world.HasPlayerReachedEnd())
 	{
-		if (!m_world.HasPlayer1ReachedEnd())
+		if (m_world.HasPlayer1ReachedEnd())
 		{
 			m_player1.SetMissionStatus(MissionStatus::kPlayer1Win);
 			RequestStackPush(StateID::kGameOver);

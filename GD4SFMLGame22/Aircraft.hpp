@@ -13,7 +13,7 @@
 class Aircraft : public Entity
 {
 public:
-	Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts);
+	Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts, bool isPlayer1);
 	unsigned int GetCategory() const override;
 
 	void IncreaseFireRate();
@@ -25,7 +25,8 @@ public:
 	void CollectBoost();
 	void IncreaseSpeed(float speed);
 	void DecreaseSpeed(float speed);
-	float GetSpeed();
+	float GetSpeed() const;
+	float GetOffroadResistance() const;
 	bool IsPlayer1() const;
 	void SetPlayer1(bool isPlayer1);
 
@@ -52,6 +53,7 @@ private:
 	bool m_boost_ready;
 	bool m_use_boost;
 	float m_speed;
+	float m_offroad_resistance;
 	unsigned int m_counter;
 
 	bool m_is_marked_for_removal;

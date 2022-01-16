@@ -17,17 +17,18 @@ namespace
 	const std::vector<AircraftData> Table = InitializeAircraftData();
 }
 
-Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts)
+Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts, bool isPlayer1)
 	: Entity(Table[static_cast<int>(type)].m_hitpoints)
 	, m_type(type)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_explosion(textures.Get(Textures::kExplosion))
 	, m_speed(Table[static_cast<int>(type)].m_speed)
+	, m_offroad_resistance(Table[static_cast<int>(type)].m_offroad_resistance)
 	, m_max_speed(Table[static_cast<int>(type)].m_max_speed)
 	, m_boost_ready(true)
 	, m_use_boost(false)
 	, m_played_explosion_sound(false)
-	, m_is_player1(true)
+	, m_is_player1(isPlayer1)
 , m_is_marked_for_removal(false)
 , m_show_explosion(true)
 , m_health_display(nullptr)
@@ -104,6 +105,15 @@ void Aircraft::UpdateTexts()
 	m_health_display->SetString(std::to_string(GetHitPoints()) + "HP");
 	m_health_display->setPosition(0.f, 50.f);
 	m_health_display->setRotation(-getRotation());
+
+	if (m_is_player1)
+	{
+		m_player_display->SetString("Player 1");
+	}
+	else
+	{
+		m_player_display->SetString("Player 2");
+	}
 
 	if (m_boost_display)
 	{
@@ -203,9 +213,14 @@ float Aircraft::GetMaxSpeed() const
 	return Table[static_cast<int>(m_type)].m_max_speed;
 }
 
-float Aircraft::GetSpeed()
+float Aircraft::GetSpeed() const
 {
 	return m_speed;
+}
+
+float Aircraft::GetOffroadResistance() const
+{
+	return m_offroad_resistance;
 }
 
 void Aircraft::UseBoost()
@@ -227,6 +242,7 @@ void Aircraft::IncreaseSpeed(float speedUp)
 void Aircraft::DecreaseSpeed(float speedDown)
 {
 	m_speed = m_speed - (m_speed * speedDown);
+	m_speed = m_speed - (m_speed * m_offroad_resistance);
 	if (m_speed < 0)
 		m_speed = 0;
 }
