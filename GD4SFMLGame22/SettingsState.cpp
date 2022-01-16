@@ -31,7 +31,22 @@ SettingsState::SettingsState(StateStack& stack, Context context)
 	back_button->SetText("Back");
 	back_button->SetCallback(std::bind(&SettingsState::RequestStackPop, this));
 
+	auto volume_up_button = std::make_shared<GUI::Button>(context);
+	volume_up_button->setPosition(80.f, 200.f);
+	volume_up_button->SetText("Volume + ");
+	//volume_up_button->SetCallback(std::bind(&SettingsState::VolumeControl(10, context), this));
+	//volume_up_button->SetCallback(SettingsState::VolumeControl(-10, context));
+	//volume_up_button->SetCallback(std::bind(&MusicPlayer::SetVolume(0.f), this));
+
+	auto volume_down_button = std::make_shared<GUI::Button>(context);
+	volume_down_button->setPosition(300.f, 200.f);
+	volume_down_button->SetText("Volume - ");
+	//volume_down_button->SetCallback(std::bind(&SettingsState::VolumeControl(-10, context), this));
+
 	m_gui_container.Pack(back_button);
+	m_gui_container.Pack(volume_up_button);
+	m_gui_container.Pack(volume_down_button);
+
 }
 
 void SettingsState::Draw()
@@ -68,7 +83,7 @@ bool SettingsState::HandleEvent(const sf::Event& event)
 
 	// If pressed button changed key bindings, update labels; otherwise consider other buttons in container
 	//if (isKeyBinding)
-		//UpdateLabels();
+	//	UpdateLabels();
 	//else
 		m_gui_container.HandleEvent(event);
 
@@ -84,7 +99,22 @@ void SettingsState::UpdateLabels()
 		sf::Keyboard::Key key = player.GetAssignedKey(static_cast<PlayerAction>(i));
 		m_binding_labels[i]->SetText(Utility::toString(key));
 	}
+
+	PlayerB& playerb = *GetContext().player2;
+
+	for (std::size_t i = 0; i < static_cast<int>(PlayerAction::kActionCount); ++i)
+	{
+		sf::Keyboard::Key key = playerb.GetAssignedKey(static_cast<PlayerAction>(i));
+		m_binding_labels[i]->SetText(Utility::toString(key));
+	}
+
 }
+
+void SettingsState::VolumeControl(float vol, Context context)
+{
+	context.music->SetVolume(vol);
+}
+
 
 void SettingsState::AddButtonLabel(PlayerAction action, float y, const std::string& text, Context context)
 {

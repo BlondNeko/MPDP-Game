@@ -26,6 +26,7 @@ public:
 private:
 	void UpdateLabels();
 	void AddButtonLabel(PlayerAction action, float y, const std::string& text, Context context);
+	void VolumeControl(float vol, Context context);
 
 
 private:
